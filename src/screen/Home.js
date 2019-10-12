@@ -1,33 +1,69 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { commonStyles } from '../styles/Styles';
+import { authenticateUser } from '../../utils/api';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+import { Button, Text } from 'native-base';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Home (props) {
   const { navigation } = props;
+  const [ token, setToken ] = useState(null);
+  const [ partner, setPartner ] = useState(null);
+
+  // useEffect(() => {
+    // if (token) {
+    //   navigatrion.navigate('CoupleConnect');
+    // }
+    // authenticateUser(navigation, setToken, setPartner);
+  // }, [ authenticateUser, token ]);
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text>로고 이미지 들어갈 자리입니다.</Text>
+    <LinearGradient
+      colors={['#f7dfd3', '#e2c3c8', '#afafc7']}
+      style={{
+        ...commonStyles.container,
+        ...styles.container
+      }}
+    >
+      <View style={styles.viewWrapper}>
+        <Button
+          block
+          rounded
+          style={{
+            ...styles.joinButton,
+            ...commonStyles.darkBtn
+          }}
+          onPress={() => {
+            navigation.navigate('SignUp');
+          }}
+        >
+          <Text>회원가입</Text>
+        </Button>
+        <Button
+          block
+          rounded
+          style={commonStyles.lightBtn}
+          onPress={() => {
+            navigation.navigate('Login');
+          }}
+        >
+          <Text>로그인</Text>
+        </Button>
       </View>
-      <Button
-        title="회원가입"
-        onPress={() => {
-          navigation.navigate('SignUp');
-        }}
-      />
-      <Button
-        title="로그인"
-        onPress={() => {
-          navigation.navigate('Login');
-        }}
-      />
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding:10
+    justifyContent: 'flex-end',
+    paddingBottom: 100
+  },
+  joinButton: {
+    marginBottom: 10
+  },
+  viewWrapper: {
+    justifyContent: 'flex-end'
   }
 });

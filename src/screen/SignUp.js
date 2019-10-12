@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, Alert } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
+import { Header, Text, Button } from 'native-base';
+import { LinearGradient } from 'expo-linear-gradient';
+import { commonStyles, formStyles } from '../styles/Styles';
+import * as SecureStore from 'expo-secure-store';
 import t from 'tcomb-form-native';
 import {
   REGEX_ID,
@@ -8,22 +12,19 @@ import {
   REGEX_PHONE_NUM,
   FORM_CONFIG
 } from '../../utils/validation';
-import { signUpApi } from '../../utils/api';
+import { signUpApi, loginApi } from '../../utils/api';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Form = t.form.Form;
 
-type Props = {}
-type State = {
-  value: Object,
-  options: Object
-}
-export default class SignUp extends Component<Props, State> {
+export default class SignUp extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       value: {},
       options: {
+        stylesheet: formStyles,
         fields: { ...FORM_CONFIG }
       }
     };
@@ -61,63 +62,88 @@ export default class SignUp extends Component<Props, State> {
     }
 
     try {
-      const response = await signUpApi(formValue);
-      console.log('RESPONSE', response);
+      const joinResponse = await signUpApi(formValue);
+      console.log('joinResponse', joinResponse);
 
-      if (response.validationError) {
+      if (joinResponse.validationError) {
         Alert.alert(
           '회원가입 실패',
-          response.validationError,
+          joinResponse.validationError,
           [{ text: '확인' }]
         );
         return;
       }
 
-      if (response.result === 'ok') {
+      if (joinResponse.result === 'ok') {
         Alert.alert(
           '축하합니다!',
           '회원가입이 완료되었습니다.',
           [{ text: '확인' }]
         );
-      }
 
-      navigation.navigate('ProfileUpload');
+        const loginResponse = await loginApi(formValue.id, formValue.password);
+        this.clearForm();
+
+        if (loginResponse.loginError) {
+          Alert.alert(
+            '로그인 실패',
+            '다시 시도해주세요',
+            [{ text: '확인' }]
+          );
+          return navigation.navigate('Login');
+        }
+
+        if (loginResponse.result === 'ok') {
+          await SecureStore.setItemAsync('token', loginResponse.token);
+          return navigation.navigate('ProfileUpload');
+        }
+      }
     } catch(err) {
       console.log(err);
-      this.clearForm();
     }
   };
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text>회원가입</Text>
+      <LinearGradient
+        colors={['#f7dfd3', '#e2c3c8', '#afafc7']}
+        style={commonStyles.container}
+      >
+        <Header style={commonStyles.header}>
+          <Text style={commonStyles.txtBlue}>
+            회원가입
+          </Text>
+        </Header>
+        <View style={styles.scrollBox}>
+          <KeyboardAwareScrollView
+            enableOnAndroid={true}
+          >
+            <Form
+              ref="form"
+              type={this.User}
+              value={this.state.value}
+              options={this.state.options}
+              onChange={this.onChange}
+            />
+          </KeyboardAwareScrollView>
         </View>
-        <ScrollView>
-          <Form
-            ref="form"
-            type={this.User}
-            value={this.state.value}
-            options={this.state.options}
-            onChange={this.onChange}
-          />
-        </ScrollView>
         <Button
-          title="다음"
+          block
+          rounded
+          style={commonStyles.darkBtn}
           onPress={this.handleSubmit}
-        />
-      </View>
+        >
+          <Text>다음</Text>
+        </Button>
+      </LinearGradient>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20
-  },
-  header: {
-    paddingTop: 10
+  scrollBox: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    flex: 6
   }
 });
