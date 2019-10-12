@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { commonStyles } from '../styles/Styles';
 import { authenticateUser } from '../../utils/api';
 // import Icon from 'react-native-vector-icons/FontAwesome';
@@ -27,6 +27,10 @@ export default function Home (props) {
       }}
     >
       <View style={styles.viewWrapper}>
+        <Image
+          source={require('../../assets/couple2.jpg')}
+          style={styles.mainImage}
+        />
         <Button
           block
           rounded
@@ -65,5 +69,11 @@ const styles = StyleSheet.create({
   },
   viewWrapper: {
     justifyContent: 'flex-end'
+  },
+  mainImage: {
+    width: '100%',
+    height: 350,
+    borderRadius: 25,
+    marginBottom: 80
   }
 });
