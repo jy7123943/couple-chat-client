@@ -44,11 +44,9 @@ export default function SignUp (props) {
     }
 
     const { id, password } = formValue;
-    console.log(id, password);
 
     try {
       const loginResponse = await loginApi(id, password);
-      console.log('loginResponse', loginResponse);
 
       if (loginResponse.Error || loginResponse === 'Unauthorized') {
         Alert.alert(
@@ -60,8 +58,8 @@ export default function SignUp (props) {
       }
 
       if (loginResponse.result === 'ok') {
-        await SecureStore.setItemAsync('token', loginResponse.token);
-        await SecureStore.setItemAsync('userId', loginResponse.userId);
+        const { token, userId } = loginResponse;
+        await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
         return navigation.navigate('CoupleConnect');
       }
     } catch(err) {

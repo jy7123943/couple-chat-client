@@ -1,7 +1,6 @@
 import getEnvVars from '../environment';
 const { apiUrl } = getEnvVars();
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
 
 export const signUpApi = (user) => {
   return axios({

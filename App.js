@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { YellowBox } from 'react-native';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+// import { createStackNavigator } from 'react-navigation-stack';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
 import Home from './src/screen/Home';
 import SignUp from './src/screen/SignUp';
 import Login from './src/screen/Login';
@@ -11,15 +12,20 @@ import ProfileUpload from './src/screen/ProfileUpload';
 import CoupleConnect from './src/screen/CoupleConnect';
 import Profile from './src/screen/Profile';
 
-const App = createStackNavigator({
-  Home: { screen: Home },
-  SignUp: { screen: SignUp },
-  Login: { screen: Login },
-  ProfileUpload: { screen: ProfileUpload },
-  CoupleConnect: { screen: CoupleConnect },
-  Profile: { screen: Profile }
+YellowBox.ignoreWarnings(['Remote debugger']);
+YellowBox.ignoreWarnings([
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
+
+const App = createSwitchNavigator({
+  Home,
+  SignUp,
+  Login,
+  ProfileUpload,
+  CoupleConnect,
+  Profile
 }, {
-  initialRouteName: 'Home', headerMode: 'none'
+  initialRouteName: 'Home',
 });
 
 const AppContainer = createAppContainer(App);
@@ -29,30 +35,22 @@ export default class Root extends Component {
     super(props);
     this.state = {
       isReady: false,
-      token: null,
-      partner: null,
-      userId: null
+      userInfo: null,
+      roomInfo: null
     };
   }
 
-  setToken = (token) => {
+  setUserInfo = (userInfo) => {
     this.setState({
       ...this.state,
-      token
+      userInfo
     });
   };
 
-  setPartner = (partner) => {
+  setRoomInfo = (roomInfo) => {
     this.setState({
       ...this.state,
-      partner
-    });
-  };
-
-  setUserId = (userId) => {
-    this.setState({
-      ...this.state,
-      userId
+      roomInfo
     });
   };
 
@@ -74,9 +72,8 @@ export default class Root extends Component {
       <AppContainer
         screenProps={{
           ...this.state,
-          setToken: this.setToken,
-          setUserId: this.setUserId,
-          setPartner: this.setPartner
+          setRoomInfo: this.setRoomInfo,
+          setUserInfo: this.setUserInfo
         }}
       />
     );

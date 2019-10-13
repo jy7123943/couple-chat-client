@@ -94,8 +94,8 @@ export default class SignUp extends Component {
         }
 
         if (loginResponse.result === 'ok') {
-          await SecureStore.setItemAsync('token', loginResponse.token);
-          await SecureStore.setItemAsync('userId', loginResponse.userId);
+          const { token, userId } = loginResponse;
+          await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
           return navigation.navigate('ProfileUpload');
         }
       }

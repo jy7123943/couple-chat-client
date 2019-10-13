@@ -13,33 +13,32 @@ export default function Home (props) {
   } = props;
 
   useEffect(() => {
-    const authenticateUser = async (navigation, setToken, setPartner, setUserId) => {
-      const token = await SecureStore.getItemAsync('token');
-      const userId = await SecureStore.getItemAsync('userId');
-      const partner = await SecureStore.getItemAsync('partner');
+    const authenticateUser = async (navigation, setUserInfo, setRoomInfo) => {
+      // await SecureStore.deleteItemAsync('userInfo');
+      // await SecureStore.deleteItemAsync('roomInfo');
+      const userInfo = await SecureStore.getItemAsync('userInfo');
+      const roomInfo = await SecureStore.getItemAsync('roomInfo');
 
-      if (token && userId) {
-        if (partner) {
-          setPartner(partner);
+      if (userInfo) {
+        setUserInfo(JSON.parse(userInfo));
+
+        if (roomInfo) {
+          setRoomInfo(JSON.parse(roomInfo));
           return navigation.navigate('Profile');
         }
-        setToken(token);
-        setUserId(userId);
         return navigation.navigate('CoupleConnect');
       }
-
-      navigation.navigate('Home');
+      return navigation.navigate('Home');
     };
 
-    if (screenProps.token) {
+    if (screenProps.userInfo) {
       return navigation.navigate('CoupleConnect');
     }
-    authenticateUser(
-      navigation,
-      screenProps.setToken,
-      screenProps.setPartner,
-      screenProps.setUserId
-    );
+    if (screenProps.roomInfo) {
+      return navigation.navigate('Profile');
+    }
+
+    authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
   }, []);
 
   return (

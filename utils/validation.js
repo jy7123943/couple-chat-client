@@ -19,8 +19,8 @@ export const REGEX_NAME = t.refinement(t.String, (name) => {
   return reg.test(name);
 });
 
-export const REGEX_PHONE_NUM = t.refinement(t.Number, (phoneNumber) => {
-  const reg = /^((01[1|6|7|8|9])[1-9]+[0-9]{6,7})|(010[1-9][0-9]{7})$/;
+export const REGEX_PHONE_NUM = t.refinement(t.String, (phoneNumber) => {
+  const reg = /^(?:(010\d{4})|(01[1|6|7|8|9]\d{3,4}))(\d{4})$/;
   return reg.test(phoneNumber);
 });
 
