@@ -9,13 +9,15 @@ import SignUp from './src/screen/SignUp';
 import Login from './src/screen/Login';
 import ProfileUpload from './src/screen/ProfileUpload';
 import CoupleConnect from './src/screen/CoupleConnect';
+import Profile from './src/screen/Profile';
 
 const App = createStackNavigator({
   Home: { screen: Home },
   SignUp: { screen: SignUp },
   Login: { screen: Login },
   ProfileUpload: { screen: ProfileUpload },
-  CoupleConnect: { screen: CoupleConnect }
+  CoupleConnect: { screen: CoupleConnect },
+  Profile: { screen: Profile }
 }, {
   initialRouteName: 'Home', headerMode: 'none'
 });
@@ -27,8 +29,32 @@ export default class Root extends Component {
     super(props);
     this.state = {
       isReady: false,
+      token: null,
+      partner: null,
+      userId: null
     };
   }
+
+  setToken = (token) => {
+    this.setState({
+      ...this.state,
+      token
+    });
+  };
+
+  setPartner = (partner) => {
+    this.setState({
+      ...this.state,
+      partner
+    });
+  };
+
+  setUserId = (userId) => {
+    this.setState({
+      ...this.state,
+      userId
+    });
+  };
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -45,7 +71,14 @@ export default class Root extends Component {
     }
 
     return (
-      <AppContainer />
+      <AppContainer
+        screenProps={{
+          ...this.state,
+          setToken: this.setToken,
+          setUserId: this.setUserId,
+          setPartner: this.setPartner
+        }}
+      />
     );
   }
 }

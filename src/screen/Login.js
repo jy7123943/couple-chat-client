@@ -19,11 +19,15 @@ export default function SignUp (props) {
     fields: {
       id: {
         label: '아이디',
-        error: '아이디를 입력해주세요'
+        error: '아이디를 입력해주세요',
+        autoCapitalize: 'none'
       },
       password: {
         label: '비밀번호',
-        error: '비밀번호를 입력해주세요'
+        error: '비밀번호를 입력해주세요',
+        password: true,
+        secureTextEntry: true,
+        autoCapitalize: 'none'
       }
     }
   };
@@ -34,7 +38,6 @@ export default function SignUp (props) {
     const { navigation } = props;
 
     var formValue = formRef.current.getValue();
-    console.log('login: ',formValue);
 
     if (!formValue) {
       return;
@@ -58,6 +61,7 @@ export default function SignUp (props) {
 
       if (loginResponse.result === 'ok') {
         await SecureStore.setItemAsync('token', loginResponse.token);
+        await SecureStore.setItemAsync('userId', loginResponse.userId);
         return navigation.navigate('CoupleConnect');
       }
     } catch(err) {

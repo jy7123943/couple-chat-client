@@ -1,22 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { commonStyles } from '../styles/Styles';
-import { authenticateUser } from '../../utils/api';
-// import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+import * as SecureStore from 'expo-secure-store';
 
 export default function Home (props) {
-  const { navigation } = props;
-  const [ token, setToken ] = useState(null);
-  const [ partner, setPartner ] = useState(null);
+  const {
+    navigation,
+    screenProps
+  } = props;
 
-  // useEffect(() => {
-    // if (token) {
-    //   navigatrion.navigate('CoupleConnect');
-    // }
-    // authenticateUser(navigation, setToken, setPartner);
-  // }, [ authenticateUser, token ]);
+  useEffect(() => {
+    const authenticateUser = async (navigation, setToken, setPartner, setUserId) => {
+      const token = await SecureStore.getItemAsync('token');
+      const userId = await SecureStore.getItemAsync('userId');
+      const partner = await SecureStore.getItemAsync('partner');
+
+      if (token && userId) {
+        if (partner) {
+          setPartner(partner);
+          return navigation.navigate('Profile');
+        }
+        setToken(token);
+        setUserId(userId);
+        return navigation.navigate('CoupleConnect');
+      }
+
+      navigation.navigate('Home');
+    };
+
+    if (screenProps.token) {
+      return navigation.navigate('CoupleConnect');
+    }
+    authenticateUser(
+      navigation,
+      screenProps.setToken,
+      screenProps.setPartner,
+      screenProps.setUserId
+    );
+  }, []);
 
   return (
     <LinearGradient

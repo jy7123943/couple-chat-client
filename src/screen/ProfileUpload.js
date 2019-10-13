@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../styles/Styles';
 
 export default function ProfileUpload (props) {
-  const { navigation } = props;
+  const { navigation, screenProps } = props;
   const [ profileImageUri, setProfileImageUri ] = useState(null);
 
   const onImageSearch = async () => {
@@ -78,7 +78,7 @@ export default function ProfileUpload (props) {
       const imgFormData = new FormData();
       imgFormData.append('profile_image_url', { uri: localUri, name: filename, type });
 
-      const response = await profileImgUploadApi(imgFormData);
+      const response = await profileImgUploadApi(imgFormData, screenProps.token);
       console.log('response!!',response);
       if (response.result === 'ok') {
         navigation.navigate('CoupleConnect');
