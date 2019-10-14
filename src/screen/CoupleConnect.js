@@ -23,18 +23,20 @@ export default function CoupleConnect (props) {
       setLoading(true);
     });
 
-    socket.on('partnerNotMatched', () => {
+    socket.on('partnerNotMatched', ({ failed }) => {
       setLoading(false);
+
+      const message = failed || '다시 시도해주세요';
       Alert.alert(
         '연결 실패',
-        '다시 시도해주세요',
+        message,
         [{ text: '확인' }]
       );
     });
 
     socket.on('completeConnection', async (roomInfo) => {
       setLoading(false);
-      // console.log('RoomInfo=============',roomInfo);
+      console.log('RoomInfo============= ', roomInfo);
       await SecureStore.setItemAsync('roomInfo', JSON.stringify(roomInfo));
 
       screenProps.setRoomInfo(roomInfo);
@@ -73,14 +75,6 @@ export default function CoupleConnect (props) {
 
     const { partnerId } = formValue;
     const userId = screenProps.userInfo && screenProps.userInfo.userId;
-
-    if (partnerId === userId) {
-      return Alert.alert(
-        '연결 실패',
-        '상대방의 아이디를 입력해주세요',
-        [{ text: '확인' }]
-      );
-    }
 
     socket.emit('requestConnection', userId, partnerId);
   };

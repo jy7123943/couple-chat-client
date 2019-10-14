@@ -8,6 +8,7 @@ import { commonStyles, formStyles } from '../styles/Styles';
 import { loginApi } from '../../utils/api';
 
 export default function SignUp (props) {
+  const { navigation, screenProps } = props;
   const Form = t.form.Form;
   const LoginType = t.struct({
     id: t.String,
@@ -35,10 +36,7 @@ export default function SignUp (props) {
   const formRef = useRef(null);
 
   const handleSubmit = async () => {
-    const { navigation } = props;
-
-    var formValue = formRef.current.getValue();
-
+    const formValue = formRef.current.getValue();
     if (!formValue) {
       return;
     }
@@ -47,6 +45,7 @@ export default function SignUp (props) {
 
     try {
       const loginResponse = await loginApi(id, password);
+      console.log(loginResponse, 'LoginResponse');
 
       if (loginResponse.Error || loginResponse === 'Unauthorized') {
         Alert.alert(
@@ -60,6 +59,7 @@ export default function SignUp (props) {
       if (loginResponse.result === 'ok') {
         const { token, userId } = loginResponse;
         await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
+        screenProps.setUserInfo({ token, userId });
         return navigation.navigate('CoupleConnect');
       }
     } catch(err) {
@@ -87,12 +87,25 @@ export default function SignUp (props) {
           block
           rounded
           style={{
-            ...commonStyles.lightBtn,
+            ...commonStyles.darkBtn,
             ...commonStyles.marginTopMd
           }}
           onPress={handleSubmit}
         >
           <Text>로그인</Text>
+        </Button>
+        <Button
+          block
+          rounded
+          style={{
+            ...commonStyles.lightBtn,
+            ...commonStyles.marginTopSm
+          }}
+          onPress={() => {
+            navigation.navigate('SignUp');
+          }}
+        >
+          <Text>회원가입</Text>
         </Button>
       </View>
     </LinearGradient>

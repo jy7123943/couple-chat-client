@@ -4,6 +4,12 @@ import { StyleSheet } from 'react-native';
 const Form = t.form.Form;
 
 export const commonStyles = StyleSheet.create({
+  flex1: {
+    flex: 1
+  },
+  headerContainer: {
+    backgroundColor: 'transparent'
+  },
   container: {
     flex: 1,
     padding: 20
@@ -11,6 +17,7 @@ export const commonStyles = StyleSheet.create({
   header: {
     backgroundColor: 'transparent',
     textAlignVertical: 'center',
+    textAlign: 'center',
     height: 70,
     paddingTop: 25,
     elevation: 0,
@@ -32,6 +39,10 @@ export const commonStyles = StyleSheet.create({
   },
   marginTopMd: {
     marginTop: 20
+  },
+  rightTextBtn: {
+    fontSize: 50,
+    paddingRight: 10
   }
 });
 

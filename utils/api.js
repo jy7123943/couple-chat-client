@@ -2,6 +2,8 @@ import getEnvVars from '../environment';
 const { apiUrl } = getEnvVars();
 import axios from 'axios';
 
+console.log(apiUrl, 'URL!!!!');
+
 export const signUpApi = (user) => {
   return axios({
     method: 'post',
@@ -11,7 +13,10 @@ export const signUpApi = (user) => {
     }
   })
     .then(res => res.data)
-    .catch(err => err.response.data);
+    .catch(err => {
+      console.log(err);
+      return err.response.data || err;
+    });
 };
 
 export const loginApi = (id, password) => {
@@ -23,7 +28,10 @@ export const loginApi = (id, password) => {
     }
   })
     .then(res => res.data)
-    .catch(err => err.response.data);
+    .catch(err => {
+      console.log(err);
+      return err.response.data || err;
+    });
 };
 
 export const profileImgUploadApi = (imgFormData, token) => {

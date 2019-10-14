@@ -3,7 +3,6 @@ import { StyleSheet, View, Image } from 'react-native';
 import { commonStyles } from '../styles/Styles';
 import { Button, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-// import Icon from 'react-native-vector-icons/FontAwesome';
 import * as SecureStore from 'expo-secure-store';
 
 export default function Home (props) {
@@ -18,7 +17,8 @@ export default function Home (props) {
       // await SecureStore.deleteItemAsync('roomInfo');
       const userInfo = await SecureStore.getItemAsync('userInfo');
       const roomInfo = await SecureStore.getItemAsync('roomInfo');
-
+      console.log(userInfo, 'userInfo----------------');
+      console.log(roomInfo, 'roomInfo----------------')
       if (userInfo) {
         setUserInfo(JSON.parse(userInfo));
 

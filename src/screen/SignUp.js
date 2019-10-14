@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Header, Text, Button } from 'native-base';
+import { Header, Text, Button, Left, Body, Container, Right } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../styles/Styles';
 import * as SecureStore from 'expo-secure-store';
@@ -14,6 +14,7 @@ import {
 } from '../../utils/validation';
 import { signUpApi, loginApi } from '../../utils/api';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Form = t.form.Form;
 
@@ -53,7 +54,7 @@ export default class SignUp extends Component {
   };
 
   handleSubmit = async () => {
-    const { navigation } = this.props;
+    const { navigation, screenProps } = this.props;
 
     var formValue = this.refs.form.getValue();
     console.log(formValue);
@@ -62,6 +63,7 @@ export default class SignUp extends Component {
     }
 
     try {
+      console.log('before sign up')
       const joinResponse = await signUpApi(formValue);
       console.log('joinResponse', joinResponse);
 
@@ -96,6 +98,7 @@ export default class SignUp extends Component {
         if (loginResponse.result === 'ok') {
           const { token, userId } = loginResponse;
           await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
+          screenProps.setUserInfo({ token, userId });
           return navigation.navigate('ProfileUpload');
         }
       }
@@ -105,16 +108,37 @@ export default class SignUp extends Component {
   };
 
   render() {
+    const { navigation } = this.props;
+
     return (
       <LinearGradient
         colors={['#f7dfd3', '#e2c3c8', '#afafc7']}
         style={commonStyles.container}
       >
-        <Header style={commonStyles.header}>
-          <Text style={commonStyles.txtBlue}>
-            회원가입
-          </Text>
-        </Header>
+        <Container style={commonStyles.headerContainer}>
+          <Header style={commonStyles.header}>
+            <Left>
+              <Button
+                transparent
+                onPress={() => {
+                  navigation.navigate('Home');
+                }}
+              >
+                <Icon name="chevron-left"
+                  color="#5f7daf"
+                  size={15}
+                />
+              </Button>
+            </Left>
+            <Right
+              style={commonStyles.rightTextBtn}
+            >
+              <Text style={commonStyles.txtBlue}>
+                Join
+              </Text>
+            </Right>
+          </Header>
+        </Container>
         <View style={styles.scrollBox}>
           <KeyboardAwareScrollView
             enableOnAndroid={true}
