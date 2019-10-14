@@ -5,7 +5,7 @@ import t from 'tcomb-form-native';
 import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../styles/Styles';
-import { loginApi } from '../../utils/api';
+import { loginApi, sendUserPushToken } from '../../utils/api';
 
 export default function SignUp (props) {
   const { navigation, screenProps } = props;
@@ -50,6 +50,15 @@ export default function SignUp (props) {
       if (loginResponse.Error || loginResponse === 'Unauthorized') {
         Alert.alert(
           '로그인 실패',
+          '아이디나 비밀번호가 잘못되었습니다',
+          [{ text: '확인' }]
+        );
+        return navigation.navigate('Login');
+      }
+
+      if (loginResponse.err) {
+        Alert.alert(
+          '로그인 실패',
           '다시 시도해주세요',
           [{ text: '확인' }]
         );
@@ -60,10 +69,17 @@ export default function SignUp (props) {
         const { token, userId } = loginResponse;
         await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
         screenProps.setUserInfo({ token, userId });
+        await sendUserPushToken(token);
         return navigation.navigate('CoupleConnect');
       }
     } catch(err) {
       console.log(err);
+      Alert.alert(
+        '로그인 실패',
+        '다시 시도해주세요',
+        [{ text: '확인' }]
+      );
+      return navigation.navigate('Login');
     }
   };
 
