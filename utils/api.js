@@ -50,32 +50,24 @@ export const profileImgUploadApi = (imgFormData, token) => {
 };
 
 export const sendUserPushToken = async (token) => {
+  console.log('---sendUserPushToken---');
   try {
-    const { status: existingStatus } = await Permissions.getAsync(
+    const { status } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     );
-    let finalStatus = existingStatus;
 
-    // if (existingStatus !== 'granted') {
-    //   // Android remote notification permissions are granted during the app
-    //   // install, so this will only ask on iOS
-    //   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    //   finalStatus = status;
-    // }
-
-    // Stop here if the user did not grant permissions
-    if (finalStatus !== 'granted') {
+    if (status !== 'granted') {
       throw new Error('permission not granted');
     }
 
     const pushToken = await Notifications.getExpoPushTokenAsync();
-    return console.log('PUSHTOKeN', pushToken);
+    console.log('push token====', pushToken, token);
     return axios({
       method: 'put',
       url: `${apiUrl}/users/pushToken`,
-      data: pushToken,
+      data: JSON.stringify({ pushToken }),
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     })

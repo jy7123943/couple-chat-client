@@ -56,7 +56,7 @@ export default function SignUp (props) {
         return navigation.navigate('Login');
       }
 
-      if (loginResponse.err) {
+      if (loginResponse.result !== 'ok') {
         Alert.alert(
           '로그인 실패',
           '다시 시도해주세요',
@@ -65,13 +65,20 @@ export default function SignUp (props) {
         return navigation.navigate('Login');
       }
 
-      if (loginResponse.result === 'ok') {
-        const { token, userId } = loginResponse;
-        await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
-        screenProps.setUserInfo({ token, userId });
-        await sendUserPushToken(token);
-        return navigation.navigate('CoupleConnect');
+      const { token, userId } = loginResponse;
+      await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
+      screenProps.setUserInfo({ token, userId });
+      const tokenSaveResult = await sendUserPushToken(token);
+
+      if (tokenSaveResult.result !== 'ok') {
+        Alert.alert(
+          '로그인 실패',
+          '다시 시도해주세요',
+          [{ text: '확인' }]
+        );
+        return navigation.navigate('Login');
       }
+      return navigation.navigate('CoupleConnect');
     } catch(err) {
       console.log(err);
       Alert.alert(

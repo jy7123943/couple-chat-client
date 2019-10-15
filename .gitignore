@@ -12,7 +12,6 @@ web-report/
 environment.js
 .gradle/
 .idea/
-assets/heart.png
 build/gradle
 frontend.iml
 gradle/
@@ -20,3 +19,4 @@ gradlew
 gradlew.bat
 local.properties
 build.gradle
+google-services.json

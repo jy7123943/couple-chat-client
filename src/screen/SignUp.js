@@ -12,7 +12,7 @@ import {
   REGEX_PHONE_NUM,
   FORM_CONFIG
 } from '../../utils/validation';
-import { signUpApi, loginApi } from '../../utils/api';
+import { signUpApi, loginApi, sendUserPushToken } from '../../utils/api';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -86,7 +86,7 @@ export default class SignUp extends Component {
         const loginResponse = await loginApi(formValue.id, formValue.password);
         this.clearForm();
 
-        if (loginResponse.loginError) {
+        if (loginResponse.loginError || loginResponse.result !== 'ok') {
           Alert.alert(
             '로그인 실패',
             '다시 시도해주세요',
@@ -95,12 +95,21 @@ export default class SignUp extends Component {
           return navigation.navigate('Login');
         }
 
-        if (loginResponse.result === 'ok') {
-          const { token, userId } = loginResponse;
-          await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
-          screenProps.setUserInfo({ token, userId });
-          return navigation.navigate('ProfileUpload');
+        const { token, userId } = loginResponse;
+        await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
+        screenProps.setUserInfo({ token, userId });
+
+        const tokenSaveResult = await sendUserPushToken(token);
+        if (tokenSaveResult.result !== 'ok') {
+          Alert.alert(
+            '로그인 실패',
+            '다시 시도해주세요',
+            [{ text: '확인' }]
+          );
+          return navigation.navigate('Login');
         }
+
+        return navigation.navigate('ProfileUpload');
       }
     } catch(err) {
       console.log(err);
