@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Header, Text, Button } from 'native-base';
+import { Header, Text, Button, Spinner } from 'native-base';
 import t from 'tcomb-form-native';
 import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,6 +9,7 @@ import { loginApi, sendUserPushToken } from '../../utils/api';
 
 export default function SignUp (props) {
   const { navigation, screenProps } = props;
+  const [ isLoading, setLoading ] = useState(false);
   const Form = t.form.Form;
   const LoginType = t.struct({
     id: t.String,
@@ -44,6 +45,7 @@ export default function SignUp (props) {
     const { id, password } = formValue;
 
     try {
+      setLoading(true);
       const loginResponse = await loginApi(id, password);
       console.log(loginResponse, 'LoginResponse');
 
@@ -53,6 +55,7 @@ export default function SignUp (props) {
           '아이디나 비밀번호가 잘못되었습니다',
           [{ text: '확인' }]
         );
+        setLoading(false);
         return navigation.navigate('Login');
       }
 
@@ -62,6 +65,7 @@ export default function SignUp (props) {
           '다시 시도해주세요',
           [{ text: '확인' }]
         );
+        setLoading(false);
         return navigation.navigate('Login');
       }
 
@@ -78,6 +82,7 @@ export default function SignUp (props) {
         );
         return navigation.navigate('Login');
       }
+      setLoading(false);
       return navigation.navigate('CoupleConnect');
     } catch(err) {
       console.log(err);
@@ -86,6 +91,7 @@ export default function SignUp (props) {
         '다시 시도해주세요',
         [{ text: '확인' }]
       );
+      setLoading(false);
       return navigation.navigate('Login');
     }
   };
@@ -106,6 +112,7 @@ export default function SignUp (props) {
           options={options}
           ref={formRef}
         />
+        {isLoading && <Spinner color='#5f7daf' />}
         <Button
           block
           rounded

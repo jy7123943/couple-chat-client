@@ -50,7 +50,7 @@ export const profileImgUploadApi = (imgFormData, token) => {
 };
 
 export const sendUserPushToken = async (token) => {
-  console.log('---sendUserPushToken---');
+  console.log('--- sendUserPushToken ---');
   try {
     const { status } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
@@ -61,7 +61,7 @@ export const sendUserPushToken = async (token) => {
     }
 
     const pushToken = await Notifications.getExpoPushTokenAsync();
-    console.log('push token====', pushToken, token);
+    console.log('push token: ', pushToken, token);
     return axios({
       method: 'put',
       url: `${apiUrl}/users/pushToken`,

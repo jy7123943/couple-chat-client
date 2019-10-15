@@ -23,10 +23,10 @@ export default function CoupleConnect (props) {
       setLoading(true);
     });
 
-    socket.on('partnerNotMatched', ({ failed }) => {
+    socket.on('partnerNotMatched', (response) => {
       setLoading(false);
 
-      const message = failed || '다시 시도해주세요';
+      const message = response ? response.failed : '다시 시도해주세요';
       Alert.alert(
         '연결 실패',
         message,
