@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Header, Text, Button, Left, Body, Container, Right } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../styles/Styles';
+import { commonStyles, formStyles } from '../../styles/Styles';
 import * as SecureStore from 'expo-secure-store';
 import t from 'tcomb-form-native';
 import {
@@ -11,8 +11,8 @@ import {
   REGEX_NAME,
   REGEX_PHONE_NUM,
   FORM_CONFIG
-} from '../../utils/validation';
-import { signUpApi, loginApi, sendUserPushToken } from '../../utils/api';
+} from '../../../utils/validation';
+import { signUpApi, loginApi, sendUserPushToken } from '../../../utils/api';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AntDesign } from '@expo/vector-icons';
 

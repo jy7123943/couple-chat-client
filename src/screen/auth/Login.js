@@ -4,8 +4,8 @@ import { Header, Text, Button, Spinner } from 'native-base';
 import t from 'tcomb-form-native';
 import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../styles/Styles';
-import { loginApi, sendUserPushToken } from '../../utils/api';
+import { commonStyles, formStyles } from '../../styles/Styles';
+import { loginApi, sendUserPushToken } from '../../../utils/api';
 
 export default function SignUp (props) {
   const { navigation, screenProps } = props;

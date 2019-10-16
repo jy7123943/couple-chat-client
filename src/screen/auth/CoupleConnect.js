@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import getEnvVars from '../../environment';
+import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 import t from 'tcomb-form-native';
 import * as SecureStore from 'expo-secure-store';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../styles/Styles';
+import { commonStyles, formStyles } from '../../styles/Styles';
 const socket = io(apiUrl);
 
 export default function CoupleConnect (props) {
@@ -46,7 +46,7 @@ export default function CoupleConnect (props) {
     return () => {
       socket.removeAllListeners();
       socket.disconnect(true);
-    }
+    };
   }, []);
 
   const Form = t.form.Form;

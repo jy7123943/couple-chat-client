@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import { commonStyles } from '../styles/Styles';
+import { commonStyles } from '../../styles/Styles';
 import { Button, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as SecureStore from 'expo-secure-store';
@@ -24,7 +24,7 @@ export default function Home (props) {
 
         if (roomInfo) {
           setRoomInfo(JSON.parse(roomInfo));
-          return navigation.navigate('Profile');
+          return navigation.navigate('Main');
         }
         return navigation.navigate('CoupleConnect');
       }
@@ -35,7 +35,7 @@ export default function Home (props) {
       return navigation.navigate('CoupleConnect');
     }
     if (screenProps.roomInfo) {
-      return navigation.navigate('Profile');
+      return navigation.navigate('Main');
     }
 
     authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
@@ -51,7 +51,7 @@ export default function Home (props) {
     >
       <View style={styles.viewWrapper}>
         <Image
-          source={require('../../assets/couple2.jpg')}
+          source={require('../../../assets/couple2.jpg')}
           style={styles.mainImage}
         />
         <Button

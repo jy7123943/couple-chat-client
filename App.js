@@ -5,30 +5,25 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import Home from './src/screen/Home';
-import SignUp from './src/screen/SignUp';
-import Login from './src/screen/Login';
-import ProfileUpload from './src/screen/ProfileUpload';
-import CoupleConnect from './src/screen/CoupleConnect';
-import Profile from './src/screen/Profile';
+import AuthNavigator from './src/screen/auth/AuthNavigator';
 
 YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
-const App = createSwitchNavigator({
-  Home,
-  SignUp,
-  Login,
-  ProfileUpload,
-  CoupleConnect,
-  Profile
-}, {
-  initialRouteName: 'Home',
-});
+// const App = createSwitchNavigator({
+//   Home,
+//   SignUp,
+//   Login,
+//   ProfileUpload,
+//   CoupleConnect,
+//   Profile
+// }, {
+//   initialRouteName: 'Home',
+// });
 
-const AppContainer = createAppContainer(App);
+// const AuthNavigator = createAppContainer(App);
 
 export default class Root extends Component {
   constructor(props) {
@@ -69,7 +64,7 @@ export default class Root extends Component {
     }
 
     return (
-      <AppContainer
+      <AuthNavigator
         screenProps={{
           ...this.state,
           setRoomInfo: this.setRoomInfo,

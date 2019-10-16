@@ -52,12 +52,14 @@ export const profileImgUploadApi = (imgFormData, token) => {
 export const sendUserPushToken = async (token) => {
   console.log('--- sendUserPushToken ---');
   try {
-    const { status } = await Permissions.getAsync(
-      Permissions.NOTIFICATIONS
-    );
+    let { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
 
     if (status !== 'granted') {
-      throw new Error('permission not granted');
+      status = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+      if (status !== 'granted') {
+        throw new Error('permission not granted');
+      }
     }
 
     const pushToken = await Notifications.getExpoPushTokenAsync();

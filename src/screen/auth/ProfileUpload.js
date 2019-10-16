@@ -3,9 +3,9 @@ import { StyleSheet, View, Image, Alert } from 'react-native';
 import { Header, Text, Button } from 'native-base';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { profileImgUploadApi } from '../../utils/api';
+import { profileImgUploadApi } from '../../../utils/api';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles } from '../styles/Styles';
+import { commonStyles } from '../../styles/Styles';
 
 export default function ProfileUpload (props) {
   const { navigation, screenProps } = props;
@@ -107,7 +107,7 @@ export default function ProfileUpload (props) {
       </Header>
       <View>
         <Image
-          source={profileImageUri ? { uri: profileImageUri } : require('../../assets/profile.jpg')}
+          source={profileImageUri ? { uri: profileImageUri } : require('../../../assets/profile.jpg')}
           style={styles.imageBox}
         />
         <Button
