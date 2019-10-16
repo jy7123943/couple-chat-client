@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import Profile from './Profile';
@@ -17,9 +16,14 @@ const Tab = createBottomTabNavigator({
   ChatAnalysis
 },
 {
-  tabBarComponent: props => (
-    <TabBarComponent {...props} style={{ borderTopColor: '#605F60' }} />
-  ),
+  tabBarComponent: props => {
+    return (
+      <TabBarComponent
+        {...props}
+        style={{ borderTopColor: '#605F60' }}
+      />
+    );
+  },
 });
 
 export default createAppContainer(Tab);

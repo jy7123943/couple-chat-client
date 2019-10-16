@@ -1,30 +1,20 @@
 import React, { Component } from 'react';
 import { YellowBox } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-// import { createStackNavigator } from 'react-navigation-stack';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import AuthNavigator from './src/screen/auth/AuthNavigator';
+import io from 'socket.io-client';
+import getEnvVars from './environment';
+const { apiUrl } = getEnvVars();
 
 YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
-// const App = createSwitchNavigator({
-//   Home,
-//   SignUp,
-//   Login,
-//   ProfileUpload,
-//   CoupleConnect,
-//   Profile
-// }, {
-//   initialRouteName: 'Home',
-// });
-
-// const AuthNavigator = createAppContainer(App);
-
+const socket = io(apiUrl);
 export default class Root extends Component {
   constructor(props) {
     super(props);
@@ -67,6 +57,7 @@ export default class Root extends Component {
       <AuthNavigator
         screenProps={{
           ...this.state,
+          socket,
           setRoomInfo: this.setRoomInfo,
           setUserInfo: this.setUserInfo
         }}

@@ -86,3 +86,27 @@ export const sendUserPushToken = async (token) => {
     console.log(err);
   }
 };
+
+export const getUserInfoApi = async (token) => {
+  return axios({
+    method: 'get',
+    url: `${apiUrl}/users`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(err => err.response.data);
+};
+
+export const getChatTextsApi = async (token) => {
+  return axios({
+    method: 'get',
+    url: `${apiUrl}/chats`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(err => err.response.data);
+};

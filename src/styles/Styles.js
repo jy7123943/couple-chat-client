@@ -4,9 +4,6 @@ import { StyleSheet } from 'react-native';
 const Form = t.form.Form;
 
 export const commonStyles = StyleSheet.create({
-  flex1: {
-    flex: 1
-  },
   headerContainer: {
     backgroundColor: 'transparent'
   },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 import t from 'tcomb-form-native';
@@ -8,10 +8,10 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../../styles/Styles';
-const socket = io(apiUrl);
 
 export default function CoupleConnect (props) {
-  const { navigation, screenProps } = props;
+  // const socket = io(apiUrl);
+  const { navigation, screenProps: { socket } } = props;
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
@@ -44,8 +44,8 @@ export default function CoupleConnect (props) {
     });
 
     return () => {
+      socket.disconnect();
       socket.removeAllListeners();
-      socket.disconnect(true);
     };
   }, []);
 
