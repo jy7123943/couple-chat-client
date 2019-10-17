@@ -11,14 +11,10 @@ import { commonStyles, formStyles } from '../../styles/Styles';
 
 export default function CoupleConnect (props) {
   // const socket = io(apiUrl);
-  const { navigation, screenProps: { socket } } = props;
+  const { navigation, screenProps: { socket }} = props;
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('connected');
-    });
-
     socket.on('waitingPartner', () => {
       setLoading(true);
     });
@@ -43,10 +39,10 @@ export default function CoupleConnect (props) {
       navigation.navigate('Profile');
     });
 
-    return () => {
-      socket.disconnect();
-      socket.removeAllListeners();
-    };
+    // return () => {
+    //   // socket.disconnect();
+    //   // socket.removeAllListeners();
+    // };
   }, []);
 
   const Form = t.form.Form;

@@ -40,6 +40,11 @@ export const commonStyles = StyleSheet.create({
   rightTextBtn: {
     fontSize: 50,
     paddingRight: 10
+  },
+  textCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

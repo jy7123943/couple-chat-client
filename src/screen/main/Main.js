@@ -7,10 +7,13 @@ export default function Main (props) {
   const [ chatTextList, setChatTextList ] = useState([]);
 
   const onLoadUserProfile = ({ userProfile }) => {
-    const { 
+    const {
       partner_id: partner,
-      chatroom_id: chatRoomId,
+      chatroom_id: chatRoom
     } = userProfile;
+
+    // console.log(partner)
+
     setUserProfile({
       user: {
         name: userProfile.name,
@@ -27,7 +30,10 @@ export default function Main (props) {
         profileImageUrl: partner.profile_image_url
       }
     });
-    setChatTextList(chatRoomId.chats);
+
+    console.log('chatRoom chats',chatRoom.chats[40]);
+    console.log('partner', partner);
+    setChatTextList(chatRoom.chats);
   };
 
   return (

@@ -34,25 +34,6 @@ export default function ProfileUpload (props) {
       }
 
       setProfileImageUri(imageFile.uri);
-      
-
-      // fetch('http://192.168.0.72:3000/imageUpload', {
-      //   method: 'POST',
-      //   header: {
-      //     'content-type': 'multipart/form-data',
-      //   },
-      //   body: imgFormData
-      // })
-      //   .then(result => {
-      //     if (result.ok) {
-      //       setProfileImageUri(imageFile.uri);
-      //       alert('이미지 업로드가 완료되었습니다');
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   })
-
     } catch (err) {
       if (err.message === 'permission not granted') {
         return Alert.alert(

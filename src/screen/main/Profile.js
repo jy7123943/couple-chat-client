@@ -17,7 +17,6 @@ export default function Profile (props) {
     const onLoad = async () => {
       try {
         const user = await getUserInfoApi(userInfo.token);
-        console.log(user, 'USER')
         onLoadUserProfile(user);
       } catch (err) {
         console.log(err);

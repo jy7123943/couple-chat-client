@@ -13,8 +13,17 @@ YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
-
-const socket = io(apiUrl);
+const socketConfig = {
+  'force new connection' : true,
+  'reconnection': true,
+  'reconnectionDelay': 2000,
+  'reconnectionDelayMax' : 60000,
+  'reconnectionAttempts': 'Infinity',
+  'timeout' : 10000,     
+  transports: ['websocket'],
+  upgrade: false
+};
+const socket = io(apiUrl, socketConfig);
 export default class Root extends Component {
   constructor(props) {
     super(props);
