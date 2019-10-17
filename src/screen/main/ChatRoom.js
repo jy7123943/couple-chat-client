@@ -20,19 +20,30 @@ export default class ChatRoom extends Component {
   }
 
   componentDidMount() {
-    const {screenProps: {
+    const {
+      navigation,
+      screenProps: {
       userInfo,
       roomInfo,
       socket,
       userProfile,
       setChatTextList
-    }} = this.props;
+    }
+    } = this.props;
+    this.focusListener = navigation.addListener("didFocus", () => {
+      console.log('componentdidmount');
+      socket.open();
+      socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
+    });
+    this.blurListener = navigation.addListener("didBlur", () => {
+      console.log('unmount');
+      socket.emit('leaveRoom');
+      // socket.disconnect();
+    });
 
     const { text } = this.state;
     // console.log(userProfile)
 
-    socket.open();
-    socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
     socket.on('connect', () => {
       // socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
       console.log('chatroom socket connected');
@@ -72,9 +83,11 @@ export default class ChatRoom extends Component {
   }
 
   componentWillUnmount() {
+    console.log('componentwillupmount')
+    this.focusListener.remove();
+    this.blurListener.remove();
     // this.socket.emit('leaveRoom');
     // this.socket.removeAllListeners();
-    this.socket.disconnect();
   }
 
   sendTextMessage = () => {
