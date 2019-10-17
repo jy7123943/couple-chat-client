@@ -13,17 +13,16 @@ YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
-const socketConfig = {
-  'force new connection' : true,
-  'reconnection': true,
-  'reconnectionDelay': 2000,
-  'reconnectionDelayMax' : 60000,
-  'reconnectionAttempts': 'Infinity',
-  'timeout' : 10000,     
-  transports: ['websocket'],
-  upgrade: false
-};
-const socket = io(apiUrl, socketConfig);
+// const socketConfig = {
+//   jsonp: false,
+//   'force new connection' : true,
+//   reconnection: true,
+//   reconnectionDelay: 100,
+//   reconnectionAttempts: 'Infinity',
+//   transports: ['websocket'],
+//   upgrade: false
+// };
+// const socket = io(apiUrl);
 export default class Root extends Component {
   constructor(props) {
     super(props);
@@ -32,6 +31,7 @@ export default class Root extends Component {
       userInfo: null,
       roomInfo: null
     };
+    this.socket = io(apiUrl);
   }
 
   setUserInfo = (userInfo) => {
@@ -49,12 +49,17 @@ export default class Root extends Component {
   };
 
   async componentDidMount() {
+    this.socket.open();
     await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
     });
     this.setState({ isReady: true });
+  }
+
+  componentWillUnmount() {
+    this.socket.disconnect();
   }
 
   render() {
@@ -66,7 +71,7 @@ export default class Root extends Component {
       <AuthNavigator
         screenProps={{
           ...this.state,
-          socket,
+          socket: this.socket,
           setRoomInfo: this.setRoomInfo,
           setUserInfo: this.setUserInfo
         }}

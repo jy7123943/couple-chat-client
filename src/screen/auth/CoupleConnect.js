@@ -15,6 +15,7 @@ export default function CoupleConnect (props) {
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
+    socket.open();
     socket.on('waitingPartner', () => {
       setLoading(true);
     });
@@ -39,10 +40,10 @@ export default function CoupleConnect (props) {
       navigation.navigate('Profile');
     });
 
-    // return () => {
-    //   // socket.disconnect();
-    //   // socket.removeAllListeners();
-    // };
+    return () => {
+      socket.disconnect();
+      // socket.removeAllListeners();
+    };
   }, []);
 
   const Form = t.form.Form;

@@ -29,11 +29,12 @@ export default class ChatRoom extends Component {
     }} = this.props;
 
     const { text } = this.state;
-    console.log(userProfile)
+    // console.log(userProfile)
 
-    // socket.connect();
+    socket.open();
+    socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
     socket.on('connect', () => {
-      socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
+      // socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
       console.log('chatroom socket connected');
     });
 
@@ -44,6 +45,11 @@ export default class ChatRoom extends Component {
 
     socket.on('connect_timeout', (timeout) => {
       console.log('chatroom socket timeout');
+      socket.connect();
+    });
+
+    socket.on('connect_error', (timeout) => {
+      console.log('chatroom connect error');
       socket.connect();
     });
 
@@ -68,7 +74,7 @@ export default class ChatRoom extends Component {
   componentWillUnmount() {
     // this.socket.emit('leaveRoom');
     // this.socket.removeAllListeners();
-    // this.socket.disconnect();
+    this.socket.disconnect();
   }
 
   sendTextMessage = () => {

@@ -4,6 +4,9 @@ import { Header, Text, Button } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../../styles/Styles';
 import { getUserInfoApi } from '../../../utils/api';
+import {
+  Notifications
+} from 'expo';
 
 export default function Profile (props) {
   const { screenProps: {
@@ -24,6 +27,10 @@ export default function Profile (props) {
     }
 
     onLoad();
+
+    _notificationSubscription = Notifications.addListener((notification) => {
+      console.log('NOTI!!!!!:',notification);
+    });
   }, []);
 
   return (
