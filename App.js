@@ -5,22 +5,24 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import AuthNavigator from './src/screen/auth/AuthNavigator';
-import io from 'socket.io-client';
-import getEnvVars from './environment';
-const { apiUrl } = getEnvVars();
+// import io from 'socket.io-client';
+// import getEnvVars from './environment';
+// const { apiUrl } = getEnvVars();
 
 YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
-// const socketConfig = {
+// const SOCKET_CONFIG = {
 //   jsonp: false,
 //   'force new connection' : true,
 //   reconnection: true,
 //   reconnectionDelay: 100,
 //   reconnectionAttempts: 'Infinity',
 //   transports: ['websocket'],
-//   upgrade: false
+//   upgrade: false,
+//   // pingTimeout: 3000,
+//   pingInterval: 500
 // };
 // const socket = io(apiUrl);
 export default class Root extends Component {
@@ -31,7 +33,7 @@ export default class Root extends Component {
       userInfo: null,
       roomInfo: null
     };
-    this.socket = io(apiUrl);
+    // this.socket = io(apiUrl, SOCKET_CONFIG);
   }
 
   setUserInfo = (userInfo) => {
@@ -42,6 +44,7 @@ export default class Root extends Component {
   };
 
   setRoomInfo = (roomInfo) => {
+    console.log('===============roominfo: ', roomInfo);
     this.setState({
       ...this.state,
       roomInfo
@@ -49,17 +52,17 @@ export default class Root extends Component {
   };
 
   async componentDidMount() {
-    this.socket.open();
+    // this.socket.open();
     await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-      ...Ionicons.font,
+      ...Ionicons.font
     });
     this.setState({ isReady: true });
   }
 
   componentWillUnmount() {
-    this.socket.disconnect();
+    // this.socket.disconnect();
   }
 
   render() {
@@ -71,7 +74,7 @@ export default class Root extends Component {
       <AuthNavigator
         screenProps={{
           ...this.state,
-          socket: this.socket,
+          // socket: this.socket,
           setRoomInfo: this.setRoomInfo,
           setUserInfo: this.setUserInfo
         }}

@@ -9,11 +9,14 @@ import {
 } from 'expo';
 
 export default function Profile (props) {
-  const { screenProps: {
-    onLoadUserProfile,
-    userProfile,
-    userInfo
-  } } = props;
+  const {
+    navigation,
+    screenProps: {
+      onLoadUserProfile,
+      userProfile,
+      userInfo
+    }
+  } = props;
   // console.log(userProfile, 'state: userProfile');
 
   useEffect(() => {
@@ -24,11 +27,14 @@ export default function Profile (props) {
       } catch (err) {
         console.log(err);
       }
-    }
+    };
 
     onLoad();
 
     _notificationSubscription = Notifications.addListener((notification) => {
+      if (notification.origin === 'received') {
+        navigation.navigate('ChatRoom');
+      }
       console.log('NOTI!!!!!:',notification);
     });
   }, []);

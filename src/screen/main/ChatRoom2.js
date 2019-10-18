@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, KeyboardAvoidingView, Form } from 'react-native';
 import { Header, Left, Right, Text, Button, Input, Item, Thumbnail } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,9 +9,13 @@ import { AntDesign } from '@expo/vector-icons';
 import moment from 'moment';
 import 'moment/min/locales';
 import { getChatTextsApi } from '../../../utils/api';
-import io from 'socket.io-client';
-import getEnvVars from '../../../environment';
-const { apiUrl } = getEnvVars();
+
+export default function ChatRoom () {
+  const [ text, setText ] = useState('');
+  const [ isLoading, setLoading ] = useState(false);
+  const [ chatTextList, setChatTextList ] = useState([]);
+  const [ isPartnerConnected, setPartnerConnected ] = useState(false);
+}
 
 export default class ChatRoom extends Component {
   constructor(props) {
@@ -21,29 +25,22 @@ export default class ChatRoom extends Component {
       text: '',
       isLoading: false,
       chatTextList: [],
-      isError: false
+      isPartnerConnected: false
     };
-
-    this.socket = io(apiUrl, {
-      autoConnect: false
-    });
   }
 
   componentDidMount() {
-    console.log('component did mount');
     const {
       navigation,
       screenProps: {
         userInfo,
         roomInfo,
-        // socket
+        socket
       }
     } = this.props;
 
-    this.socket.connect();
-
-    this.focusListener = navigation.addListener('didFocus', async () => {
-      console.log('screen did focus');
+    this.focusListener = navigation.addListener("didFocus", async () => {
+      console.log('componentdidmount');
       try {
         const { chats } = await getChatTextsApi(userInfo.token);
         this.onLoadChatTextList(chats);
@@ -51,36 +48,40 @@ export default class ChatRoom extends Component {
         console.log(err);
       }
 
-      this.socket.emit('joinRoom', roomInfo.roomKey);
+      socket.connect();
+      socket.emit('joinRoom', roomInfo.roomKey);
     });
 
-    this.blurListener = navigation.addListener('didBlur', () => {
-      console.log('screen did blur');
-      this.socket.emit('leaveRoom', roomInfo.roomKey);
+    this.blurListener = navigation.addListener("didBlur", () => {
+      console.log('unmount');
+      socket.emit('leaveRoom', roomInfo.roomKey);
+      socket.disconnect();
     });
 
-    this.socket.on('connect', () => {
+    socket.on('connect', () => {
       console.log('chatroom socket connected');
     });
 
-    this.socket.on('error', (err) => {
-      this.setState({
-        ...this.state,
-        isError: true
-      });
-      console.log('chatroom socket error', err);
-      console.log(err.message);
-      console.error(err);
-
-      // this.forceUpdate();
+    socket.on('error', () => {
+      console.log('chatroom socket error');
       // socket.connect();
     });
 
-    this.socket.on('disconnect', () => {
-      console.log('disconnect');
+    socket.on('disconnect', () => {
+      // socket.connect();
     });
 
-    this.socket.on('sendMessage', ({ chat }) => {
+    socket.on('partnerConnect', () => {
+      console.log('partnerConnect');
+      this.onPartnerConnectionChange(true);
+    });
+
+    socket.on('partnerDisconnect', () => {
+      console.log('partnerDisconnect');
+      this.onPartnerConnectionChange(false);
+    });
+
+    socket.on('sendMessage', ({ chat }) => {
       const {
         chatTextList
       } = this.state;
@@ -98,7 +99,6 @@ export default class ChatRoom extends Component {
   componentWillUnmount() {
     this.focusListener.remove();
     this.blurListener.remove();
-    this.socket.disconnect();
   }
 
   onLoadChatTextList = (chats) => {
@@ -108,10 +108,17 @@ export default class ChatRoom extends Component {
     });
   };
 
+  onPartnerConnectionChange = (isConnected) => {
+    this.setState({
+      ...this.state,
+      isPartnerConnection: isConnected
+    });
+  };
+
   sendTextMessage = () => {
     const {
       screenProps: {
-        // socket,
+        socket,
         userInfo,
         roomInfo
       }
@@ -123,14 +130,12 @@ export default class ChatRoom extends Component {
       return;
     }
 
-    const newChat = {
+    socket.emit('sendMessage', {
       text: text.trim(),
       userId: userInfo.userId,
       roomKey: roomInfo.roomKey,
       time: new Date()
-    };
-
-    this.socket.emit('sendMessage', newChat);
+    });
 
     this.setState({
       ...this.state,

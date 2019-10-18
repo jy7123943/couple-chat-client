@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 import t from 'tcomb-form-native';
@@ -10,12 +10,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../../styles/Styles';
 
 export default function CoupleConnect (props) {
-  // const socket = io(apiUrl);
-  const { navigation, screenProps: { socket }} = props;
+  const socket = io(apiUrl);
+  const { 
+    navigation, 
+    // screenProps: { socket }
+  } = props;
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
-    socket.open();
+    socket.connect();
     socket.on('waitingPartner', () => {
       setLoading(true);
     });
@@ -32,17 +35,20 @@ export default function CoupleConnect (props) {
     });
 
     socket.on('completeConnection', async (roomInfo) => {
-      setLoading(false);
-      console.log('RoomInfo============= ', roomInfo);
+      const { screenProps } = props;
+
       await SecureStore.setItemAsync('roomInfo', JSON.stringify(roomInfo));
 
       screenProps.setRoomInfo(roomInfo);
-      navigation.navigate('Profile');
+      setLoading(false);
+      console.log('RoomInfo============= ', roomInfo);
+
+      navigation.navigate('Main');
     });
 
     return () => {
-      socket.disconnect();
-      // socket.removeAllListeners();
+      socket.disconect();
+      socket.removeAllListeners();
     };
   }, []);
 
@@ -64,6 +70,8 @@ export default function CoupleConnect (props) {
 
   const formRef = useRef(null);
   const handleSubmit = async () => {
+    const { screenProps } = props;
+
     var formValue = formRef.current.getValue();
 
     if (!formValue) {
@@ -77,6 +85,8 @@ export default function CoupleConnect (props) {
   };
 
   const handleCancel = () => {
+    const { screenProps } = props;
+
     const userId = screenProps.userInfo && screenProps.userInfo.userId;
     socket.emit('cancelConnection', userId);
     setLoading(false);
