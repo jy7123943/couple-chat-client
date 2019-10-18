@@ -63,6 +63,13 @@ export const sendUserPushToken = async (token) => {
     }
 
     const pushToken = await Notifications.getExpoPushTokenAsync();
+    Notifications.createChannelAndroidAsync('chat-messages', {
+      name: 'Chat messages',
+      sound: true,
+      priority: 'max',
+      vibrate: [0, 250, 250, 250]
+    });
+
     console.log('push token: ', pushToken, token);
     return axios({
       method: 'put',

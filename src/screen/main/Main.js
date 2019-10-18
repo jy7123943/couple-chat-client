@@ -4,13 +4,12 @@ import TabNavigator from './BtmTabNavigator';
 export default function Main (props) {
   const { screenProps } = props;
   const [ userProfile, setUserProfile ] = useState(null);
-  const [ chatTextList, setChatTextList ] = useState([]);
 
   const onLoadUserProfile = ({ userProfile }) => {
     try {
       const {
-        partner_id: partner,
-        chatroom_id: chatRoom
+        partner_id: partner
+        // chatroom_id: chatRoom
       } = userProfile;
 
       // console.log(partner)
@@ -31,7 +30,7 @@ export default function Main (props) {
         }
       });
       console.log('partner', partner);
-      setChatTextList(chatRoom.chats);
+      // setChatTextList(chatRoom.chats);
     } catch (err) {
       console.log('timeout error',err);
     }
@@ -42,9 +41,7 @@ export default function Main (props) {
       screenProps={{
         ...screenProps,
         onLoadUserProfile,
-        userProfile,
-        chatTextList,
-        setChatTextList
+        userProfile
       }}
     />
   );

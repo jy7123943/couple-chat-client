@@ -8,6 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import moment from 'moment';
 import 'moment/min/locales';
+import { getChatTextsApi } from '../../../utils/api';
 
 export default class ChatRoom extends Component {
   constructor(props) {
@@ -16,42 +17,53 @@ export default class ChatRoom extends Component {
     this.state = {
       text: '',
       isLoading: false,
+      chatTextList: []
     };
   }
+
+  onLoadChatTextList = (chats) => {
+    this.setState({
+      ...this.state,
+      chatTextList: chats
+    });
+  };
 
   componentDidMount() {
     const {
       navigation,
       screenProps: {
-      userInfo,
-      roomInfo,
-      socket,
-      userProfile,
-      setChatTextList
-    }
+        userInfo,
+        roomInfo,
+        socket
+      }
     } = this.props;
-    this.focusListener = navigation.addListener("didFocus", () => {
+
+    this.focusListener = navigation.addListener("didFocus", async () => {
       console.log('componentdidmount');
+      try {
+        const { chats } = await getChatTextsApi(userInfo.token);
+        this.onLoadChatTextList(chats);
+      } catch (err) {
+        console.log(err);
+      }
+
       socket.open();
-      socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
+      socket.emit('joinRoom', roomInfo.roomKey);
     });
+
     this.blurListener = navigation.addListener("didBlur", () => {
       console.log('unmount');
-      socket.emit('leaveRoom');
+      socket.emit('leaveRoom', roomInfo.roomKey);
       // socket.disconnect();
     });
 
-    const { text } = this.state;
-    // console.log(userProfile)
-
     socket.on('connect', () => {
-      // socket.emit('joinRoom', userInfo.userId, roomInfo.roomKey);
       console.log('chatroom socket connected');
     });
 
     socket.on('disconnect', () => {
       console.log('chatroom socket disconnected');
-      socket.connect();
+      // socket.connect();
     });
 
     socket.on('connect_timeout', (timeout) => {
@@ -65,16 +77,13 @@ export default class ChatRoom extends Component {
     });
 
     socket.on('sendMessage', ({ chat }) => {
-      console.log('sendMessage===========================', chat);
       const {
-        screenProps: {
-          chatTextList,
-          setChatTextList,
-        }
-      } = this.props;
+        chatTextList
+      } = this.state;
+      console.log('sendMessage', chat);
       const copiedChatList = chatTextList.slice();
 
-      setChatTextList(copiedChatList.concat([{
+      this.onLoadChatTextList(copiedChatList.concat([{
         text: chat.text,
         created_at: chat.time,
         user_id: chat.userId
@@ -83,11 +92,8 @@ export default class ChatRoom extends Component {
   }
 
   componentWillUnmount() {
-    console.log('componentwillupmount')
     this.focusListener.remove();
     this.blurListener.remove();
-    // this.socket.emit('leaveRoom');
-    // this.socket.removeAllListeners();
   }
 
   sendTextMessage = () => {
@@ -127,12 +133,15 @@ export default class ChatRoom extends Component {
       navigation,
       screenProps: {
         userProfile,
-        chatTextList,
         roomInfo: {
           partnerId
         }
       }
     } = this.props;
+
+    const {
+      chatTextList
+    } = this.state;
 
     return (
       <LinearGradient
@@ -334,6 +343,8 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingLeft: 15,
     paddingRight: 15,
+    marginTop: 20,
+    marginBottom: 10,
     backgroundColor: 'rgba(152, 164, 158, 0.6)'
   }
 });
