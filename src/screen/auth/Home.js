@@ -18,8 +18,8 @@ export default function Home (props) {
       // await SecureStore.setItemAsync('roomInfo', JSON.stringify({"roomKey":"5da345da34","partnerId":"test17"}));
       const userInfo = await SecureStore.getItemAsync('userInfo');
       const roomInfo = await SecureStore.getItemAsync('roomInfo');
-      console.log(userInfo, 'userInfo----------------');
-      console.log(roomInfo, 'roomInfo----------------')
+      console.log('===== userInfo: ', userInfo);
+      console.log('===== roomInfo: ', roomInfo);
       if (userInfo) {
         setUserInfo(JSON.parse(userInfo));
 

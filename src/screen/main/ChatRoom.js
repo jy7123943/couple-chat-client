@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, KeyboardAvoidingView, Form } from 'react-native';
+import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Header, Left, Right, Text, Button, Input, Item, Thumbnail } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
@@ -35,8 +35,7 @@ export default class ChatRoom extends Component {
       navigation,
       screenProps: {
         userInfo,
-        roomInfo,
-        // socket
+        roomInfo
       }
     } = this.props;
 
@@ -72,9 +71,6 @@ export default class ChatRoom extends Component {
       console.log('chatroom socket error', err);
       console.log(err.message);
       console.error(err);
-
-      // this.forceUpdate();
-      // socket.connect();
     });
 
     this.socket.on('disconnect', () => {
@@ -112,7 +108,6 @@ export default class ChatRoom extends Component {
   sendTextMessage = () => {
     const {
       screenProps: {
-        // socket,
         userInfo,
         roomInfo
       }
@@ -205,7 +200,7 @@ export default class ChatRoom extends Component {
           enabled
         >
           <ScrollView
-            ref='chatViewBtm'
+            ref="chatViewBtm"
             onLayout={this.scrollToBottom}
             onContentSizeChange={this.scrollToBottom}
           >
@@ -294,7 +289,7 @@ export default class ChatRoom extends Component {
                 onPress={this.sendTextMessage}
               >
                 <Feather
-                  name='send'
+                  name="send"
                   size={30}
                   color="#5f7daf"
                 />

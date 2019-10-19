@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Image, Alert, ScrollView, CameraRoll } from 'react-native';
-import { Container, Header, Text, Button, Content, ListItem, Spinner } from 'native-base';
+import { Container, Header, Text, Button, Content, ListItem } from 'native-base';
 import { commonStyles } from '../../styles/Styles';
 import PureChart from 'react-native-pure-chart';
 import { SimpleLineIcons, MaterialCommunityIcons, Entypo,
@@ -372,10 +372,22 @@ export default function ChatAnalysisResult (props) {
                 />
               </View>
             </ViewShot>
+            <View>
+              <Text style={{
+                fontSize: 14,
+                color: '#999',
+                textAlign: 'center'
+              }}>
+                결과 보고서는 다음 분석 전까지 보관되지만 어플 삭제나 계정 전환 등의 사유로 삭제될 수 있습니다. 안전하게 보관하려면 이미지로 저장해주시기 바랍니다.
+              </Text>
+            </View>
           </ScrollView>
         </Content>
         <View
-          style={styles.itemVertical}
+          style={{
+            ...styles.itemVertical,
+            paddingTop: 10
+          }}
         >
           <Button
             rounded

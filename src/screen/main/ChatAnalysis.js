@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
-import { Container, Header, Text, Button, Spinner } from 'native-base';
+import React, { useState } from 'react';
+import { StyleSheet, View, Image, Alert } from 'react-native';
+import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
 import { getChatAnalysisApi } from '../../../utils/api';
@@ -12,13 +12,11 @@ export default function ChatAnalysis (props) {
     navigation,
     screenProps: {
       userInfo,
-      userProfile: { user, partner },
-      analysisResult,
+      userProfile: { user },
       onLoadAnalysisResult
     }
   } = props;
   const [ isLoading, setLoading ] = useState(false);
-  // const [ analysisResult, setAnalysisResult ] = useState(null);
 
   const handleBtnPress = async () => {
     try {
@@ -96,13 +94,6 @@ export default function ChatAnalysis (props) {
           <Text>지금 분석하기</Text>
         </Button>
       </View>
-    {/*
-      {analysisResult && (
-        <ChatAnalysisResult
-          analysisResult={analysisResult}
-          userName={user.name}
-          partnerName={partner.name}
-        /> */}
     </LinearGradient>
   );
 }
