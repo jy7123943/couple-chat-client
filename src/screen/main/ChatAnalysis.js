@@ -1,18 +1,109 @@
 
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Header, Text, Button } from 'native-base';
+import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
+import { Container, Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../../styles/Styles';
+import { commonStyles } from '../../styles/Styles';
+import { getChatAnalysisApi } from '../../../utils/api';
+import * as SecureStore from 'expo-secure-store';
 
 export default function ChatAnalysis (props) {
+  const {
+    navigation,
+    screenProps: {
+      userInfo,
+      userProfile: { user, partner },
+      analysisResult,
+      onLoadAnalysisResult
+    }
+  } = props;
+  const [ isLoading, setLoading ] = useState(false);
+  // const [ analysisResult, setAnalysisResult ] = useState(null);
+
+  const handleBtnPress = async () => {
+    try {
+      setLoading(true);
+      const response = await getChatAnalysisApi(userInfo.token);
+
+      if (response.error) {
+        Alert.alert(
+          '실패',
+          response.error,
+          [{ text: '확인' }]
+        );
+        return setLoading(false);
+      }
+
+      if (response.result === 'ok') {
+        await SecureStore.setItemAsync('analysisResult', JSON.stringify(response.analysis_report));
+        onLoadAnalysisResult(response.analysis_report);
+        setLoading(false);
+      }
+      navigation.navigate('ChatAnalysisResult');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text>ChatAnalysis</Text>
+    <LinearGradient
+      colors={['#f7eed3', '#cbcbf8', '#afafc7']}
+      style={commonStyles.container}
+    >
+      <Header style={commonStyles.header}>
+        <Text style={commonStyles.txtBlue}>
+          대화 분석
+        </Text>
+      </Header>
+      <View style={styles.container}>
+        <View>
+          <Image
+            source={require('../../../assets/couple_illust.png')}
+            style={styles.mainImage}
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <Text
+            style={{
+              width: '100%',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: 25
+            }}
+          >
+            대화로 분석하는 연애 점수
+          </Text>
+          <Text
+            style={{
+              width: '100%',
+              textAlign: 'center',
+              fontSize: 18,
+              padding: 20
+            }}
+          >
+            {user.name}님 커플은 얼마나 대화를 자주 하고 있을까요? 최근 30일 동안의 채팅 대화들을 분석하여 {user.name}님 커플의 연애 점수를 알려드립니다.
+          </Text>
+          {isLoading && (
+            <Spinner color='#5f7daf' />
+          )}
+        </View>
+        <Button
+          block
+          rounded
+          style={{backgroundColor: '#907af0'}}
+          onPress={handleBtnPress}
+        >
+          <Text>지금 분석하기</Text>
+        </Button>
       </View>
-    </View>
+    {/*
+      {analysisResult && (
+        <ChatAnalysisResult
+          analysisResult={analysisResult}
+          userName={user.name}
+          partnerName={partner.name}
+        /> */}
+    </LinearGradient>
   );
 }
 
@@ -20,5 +111,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding:10
+  },
+  mainImage: {
+    width: '100%',
+    height: 250,
+    marginTop: 50
   }
 });

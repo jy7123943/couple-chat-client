@@ -4,6 +4,7 @@ import TabNavigator from './BtmTabNavigator';
 export default function Main (props) {
   const { screenProps } = props;
   const [ userProfile, setUserProfile ] = useState(null);
+  const [ analysisResult, setAnalysisResult ] = useState(null);
 
   const onLoadUserProfile = ({ userProfile }) => {
     try {
@@ -36,12 +37,18 @@ export default function Main (props) {
     }
   };
 
+  const onLoadAnalysisResult = (analysisResult) => {
+    setAnalysisResult(analysisResult);
+  };
+
   return (
     <TabNavigator
       screenProps={{
         ...screenProps,
+        userProfile,
         onLoadUserProfile,
-        userProfile
+        analysisResult,
+        onLoadAnalysisResult
       }}
     />
   );

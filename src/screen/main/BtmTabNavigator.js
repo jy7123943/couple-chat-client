@@ -4,6 +4,7 @@ import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import Profile from './Profile';
 import ChatRoom from './ChatRoom';
 import ChatAnalysis from './ChatAnalysis';
+import ChatAnalysisResult from './ChartAnalysisResult';
 
 const TabBarComponent = props => <BottomTabBar {...props} />;
 
@@ -13,7 +14,8 @@ const Tab = createBottomTabNavigator({
     screen: ChatRoom,
     navigationOptions: { tabBarVisible: false }
   },
-  ChatAnalysis
+  ChatAnalysis,
+  ChatAnalysisResult
 },
 {
   tabBarComponent: props => {

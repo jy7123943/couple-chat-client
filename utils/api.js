@@ -96,7 +96,7 @@ export const sendUserPushToken = async (token) => {
   }
 };
 
-export const getUserInfoApi = async (token) => {
+export const getUserInfoApi = (token) => {
   return axios({
     method: 'get',
     url: `${apiUrl}/users`,
@@ -108,10 +108,22 @@ export const getUserInfoApi = async (token) => {
     .catch(err => err.response.data);
 };
 
-export const getChatTextsApi = async (token) => {
+export const getChatTextsApi = (token) => {
   return axios({
     method: 'get',
     url: `${apiUrl}/chats`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(err => err.response.data);
+};
+
+export const getChatAnalysisApi = (token) => {
+  return axios({
+    method: 'post',
+    url: `${apiUrl}/chats/analysis`,
     headers: {
       'Authorization': `Bearer ${token}`
     }

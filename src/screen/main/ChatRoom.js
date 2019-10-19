@@ -46,6 +46,7 @@ export default class ChatRoom extends Component {
       console.log('screen did focus');
       try {
         const { chats } = await getChatTextsApi(userInfo.token);
+        console.log(chats);
         this.onLoadChatTextList(chats);
       } catch (err) {
         console.log(err);
@@ -208,7 +209,7 @@ export default class ChatRoom extends Component {
             onLayout={this.scrollToBottom}
             onContentSizeChange={this.scrollToBottom}
           >
-            {chatTextList.length > 0 && (
+            {chatTextList && chatTextList.length > 0 && (
               chatTextList.map((chat, i) => {
                 const isPartner = chat.user_id === partnerId;
                 const isFirstPartner = isPartner && (i === 0 || chatTextList[i - 1].user_id !== partnerId);

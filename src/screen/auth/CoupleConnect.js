@@ -11,8 +11,8 @@ import { commonStyles, formStyles } from '../../styles/Styles';
 
 export default function CoupleConnect (props) {
   const socket = io(apiUrl);
-  const { 
-    navigation, 
+  const {
+    navigation,
     // screenProps: { socket }
   } = props;
   const [ isLoading, setLoading ] = useState(false);
