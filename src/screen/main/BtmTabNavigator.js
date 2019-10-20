@@ -6,7 +6,6 @@ import ChatRoom from './ChatRoom';
 import ChatAnalysis from './ChatAnalysis';
 import ChatAnalysisResult from './ChartAnalysisResult';
 import { StyleSheet, Image } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 
 const TabBarComponent = props => <BottomTabBar {...props} />;
 
@@ -29,7 +28,7 @@ const Tab = createBottomTabNavigator({
     screen: ChatRoom,
     navigationOptions: {
       tabBarVisible: false,
-      tabBarIcon: ({ focused }) => (
+      tabBarIcon: () => (
         <Image
           source={require('../../../assets/love_icon01.png')}
           style={styles.tabIcon}

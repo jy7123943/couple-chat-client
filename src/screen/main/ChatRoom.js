@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
-import { Header, Left, Right, Text, Button, Input, Item, Thumbnail } from 'native-base';
+import { Header, Left, Right, Text, Button, Input, Item, Thumbnail, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
 import { Feather } from '@expo/vector-icons';
@@ -44,6 +44,10 @@ export default class ChatRoom extends Component {
     this.focusListener = navigation.addListener('didFocus', async () => {
       console.log('screen did focus');
       try {
+        this.setState({
+          ...this.state,
+          isLoading: true
+        });
         const { chats } = await getChatTextsApi(userInfo.token);
         console.log(chats);
         this.onLoadChatTextList(chats);
@@ -101,7 +105,8 @@ export default class ChatRoom extends Component {
   onLoadChatTextList = (chats) => {
     this.setState({
       ...this.state,
-      chatTextList: chats
+      chatTextList: chats,
+      isLoading: false
     });
   };
 
@@ -150,7 +155,8 @@ export default class ChatRoom extends Component {
     } = this.props;
 
     const {
-      chatTextList
+      chatTextList,
+      isLoading
     } = this.state;
 
     return (
@@ -204,72 +210,75 @@ export default class ChatRoom extends Component {
             onLayout={this.scrollToBottom}
             onContentSizeChange={this.scrollToBottom}
           >
-            {chatTextList && chatTextList.length > 0 && (
-              chatTextList.map((chat, i) => {
-                const isPartner = chat.user_id === partnerId;
-                const isFirstPartner = isPartner && (i === 0 || chatTextList[i - 1].user_id !== partnerId);
-                const imageUrl = userProfile.partner.profileImageUrl;
+            <>
+              {chatTextList && chatTextList.length > 0 && (
+                chatTextList.map((chat, i) => {
+                  const isPartner = chat.user_id === partnerId;
+                  const isFirstPartner = isPartner && (i === 0 || chatTextList[i - 1].user_id !== partnerId);
+                  const imageUrl = userProfile.partner.profileImageUrl;
 
-                const verifyDateChange = (today, yesterday) => {
-                  return (today.getDate() - yesterday.getDate()) !== 0
-                  || today.getMonth() !== yesterday.getMonth()
-                  || today.getFullYear() !== yesterday.getFullYear()
-                };
+                  const verifyDateChange = (today, yesterday) => {
+                    return (today.getDate() - yesterday.getDate()) !== 0
+                    || today.getMonth() !== yesterday.getMonth()
+                    || today.getFullYear() !== yesterday.getFullYear()
+                  };
 
-                const isDateChanged = (i === 0) || verifyDateChange(
-                  new Date(chatTextList[i - 1].created_at),
-                  new Date(chat.created_at)
-                );
+                  const isDateChanged = (i === 0) || verifyDateChange(
+                    new Date(chatTextList[i - 1].created_at),
+                    new Date(chat.created_at)
+                  );
 
-                return (
-                  <View key={chat.created_at}>
-                    {isDateChanged && (
-                      <View
-                        style={commonStyles.textCenter}
-                      >
-                        <Text
-                          style={styles.dateBox}
+                  return (
+                    <View key={chat.created_at}>
+                      {isDateChanged && (
+                        <View
+                          style={commonStyles.textCenter}
                         >
-                          {moment(chat.created_at).locale('ko').format('YYYY MMM Do dddd')}
-                        </Text>
-                      </View>
-                    )}
-                    <View
-                      style={[isPartner ? {
-                        ...styles.chatTextBox,
-                        ...styles.textLeft
-                      } : {
-                        ...styles.chatTextBox,
-                        ...styles.textRight
-                      }]}
-                    >
-                      {isFirstPartner && (
-                        <Thumbnail
-                          source={imageUrl ? {
-                            uri: userProfile.partner.profileImageUrl
-                          } : require('../../../assets/profile.jpg')}
-                          style={styles.imageBox}
-                        />
+                          <Text
+                            style={styles.dateBox}
+                          >
+                            {moment(chat.created_at).locale('ko').format('YYYY MMM Do dddd')}
+                          </Text>
+                        </View>
                       )}
-                      <Text>
-                        {chat.text}
-                      </Text>
-                      <Text
+                      <View
                         style={[isPartner ? {
-                          ...styles.timeMark,
-                          ...styles.timeRight
+                          ...styles.chatTextBox,
+                          ...styles.textLeft
                         } : {
-                          ...styles.timeMark,
-                          ...styles.timeLeft
+                          ...styles.chatTextBox,
+                          ...styles.textRight
                         }]}
                       >
-                        {moment(chat.created_at).locale('ko').format('LT')}
-                      </Text>
+                        {isFirstPartner && (
+                          <Thumbnail
+                            source={imageUrl ? {
+                              uri: userProfile.partner.profileImageUrl
+                            } : require('../../../assets/profile.jpg')}
+                            style={styles.imageBox}
+                          />
+                        )}
+                        <Text>
+                          {chat.text}
+                        </Text>
+                        <Text
+                          style={[isPartner ? {
+                            ...styles.timeMark,
+                            ...styles.timeRight
+                          } : {
+                            ...styles.timeMark,
+                            ...styles.timeLeft
+                          }]}
+                        >
+                          {moment(chat.created_at).locale('ko').format('LT')}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                );
-              })
-            )}
+                  );
+                })
+              )}
+              {isLoading && <Spinner color='#5f7daf' />}
+            </>
           </ScrollView>
           <View style={{
             height: 60
@@ -309,13 +318,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   chatTextBox: {
+    position: 'relative',
     display: 'flex',
     alignSelf: 'flex-start',
     maxWidth: '75%',
     backgroundColor: '#fff',
-    marginTop: 10,
+    marginBottom: 10,
     borderRadius: 15,
-    position: 'relative',
     padding: 5,
     paddingLeft: 10,
     paddingRight: 10

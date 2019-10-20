@@ -12,6 +12,7 @@ import * as Permissions from 'expo-permissions';
 import ViewShot from "react-native-view-shot";
 import moment from 'moment';
 import 'moment/min/locales';
+import Loading from '../../components/main/Loading';
 
 export default function ChatAnalysisResult (props) {
   const [ isLoading, setLoading ] = useState(true);
@@ -44,9 +45,7 @@ export default function ChatAnalysisResult (props) {
   }, []);
 
   if (isLoading) {
-    return (
-      <View></View>
-    );
+    return <Loading />;
   }
 
   if (!analysisResult) {
@@ -77,7 +76,6 @@ export default function ChatAnalysisResult (props) {
     startDate,
     endDate
   } = analysisResult;
-  console.log(props.analysisResult);
 
   const totalTextLengthData = [{
     data: [
@@ -101,22 +99,20 @@ export default function ChatAnalysisResult (props) {
   };
 
   const insertImageByScore = (score) => {
-    let imagePath;
-
     if (score <= 20) {
-      return imagePath = require('../../../assets/weather_icon05.png');
+      return require('../../../assets/weather_icon05.png');
     };
     if (score <= 40) {
-      return imagePath = require('../../../assets/weather_icon04.png');
+      return require('../../../assets/weather_icon04.png');
     };
     if (score <= 60) {
-      return imagePath = require('../../../assets/weather_icon03.png');
+      return require('../../../assets/weather_icon03.png');
     };
     if (score <= 80) {
-      return imagePath = require('../../../assets/weather_icon02.png');
+      return require('../../../assets/weather_icon02.png');
     };
     if (score <= 100) {
-      return imagePath = require('../../../assets/weather_icon01.png');
+      return require('../../../assets/weather_icon01.png');
     };
   };
 

@@ -8,6 +8,7 @@ import { calculateDday } from '../../../utils/utils';
 import { Notifications } from 'expo';
 import ProfileModal from '../../components/main/ProfileModal';
 import { FontAwesome } from '@expo/vector-icons';
+import Loading from '../../components/main/Loading';
 
 export default function Profile (props) {
   const {
@@ -46,7 +47,7 @@ export default function Profile (props) {
   }, []);
 
   if (isLoading) {
-    return <View></View>;
+    return <Loading />;
   }
 
   const {
