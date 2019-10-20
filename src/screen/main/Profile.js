@@ -61,15 +61,19 @@ export default function Profile (props) {
     >
       {isUserModalVisible ? (
         <ProfileModal
+          {...props.screenProps}
           onModalClose={setUserModalVisible}
           isModalVisible={isUserModalVisible}
-          userProfile={user}
+          userProfile={userProfile}
+          isUser={true}
         />
       ) : (
         <ProfileModal
+          {...props.screenProps}
           onModalClose={setPartnerModalVisible}
           isModalVisible={isPartnerModalVisible}
-          userProfile={partner}
+          userProfile={userProfile}
+          isUser={false}
         />
       )}
       <Container

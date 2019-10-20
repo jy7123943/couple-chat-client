@@ -37,8 +37,22 @@ export const loginApi = (id, password) => {
 
 export const profileImgUploadApi = (imgFormData, token) => {
   return axios({
+    method: 'post',
+    url: `${apiUrl}/profileImage`,
+    data: imgFormData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(err => err.response.data);
+};
+
+export const profileImgModifyApi = (imgFormData, token) => {
+  return axios({
     method: 'put',
-    url: `${apiUrl}/profileUpload`,
+    url: `${apiUrl}/profileImage`,
     data: imgFormData,
     headers: {
       'Content-Type': 'multipart/form-data',

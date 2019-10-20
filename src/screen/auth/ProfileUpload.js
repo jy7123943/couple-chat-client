@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { profileImgUploadApi } from '../../../utils/api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
+import { createImageForm } from '../../../utils/utils';
 
 export default function ProfileUpload (props) {
   const { navigation, screenProps } = props;
@@ -50,16 +51,9 @@ export default function ProfileUpload (props) {
     try {
       console.log(profileImageUri);
 
-      const localUri = profileImageUri;
-      const filename = localUri.split('/').pop();
+      const imgFormData = createImageForm(profileImageUri);
 
-      const match = /\.(\w+)$/.exec(filename);
-      const type = match ? `image/${match[1]}` : `image`;
-
-      const imgFormData = new FormData();
-      imgFormData.append('profile_image_url', { uri: localUri, name: filename, type });
-
-      const response = await profileImgUploadApi(imgFormData, screenProps.token);
+      const response = await profileImgUploadApi(imgFormData, screenProps.userInfo.token);
       console.log('response!!',response);
       if (response.result === 'ok') {
         navigation.navigate('CoupleConnect');

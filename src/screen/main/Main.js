@@ -6,6 +6,10 @@ export default function Main (props) {
   const [ userProfile, setUserProfile ] = useState(null);
   const [ analysisResult, setAnalysisResult ] = useState(null);
 
+  const onUserProfileUpdate = (user, partner) => {
+    setUserProfile({ user, partner });
+  };
+
   const onLoadUserProfile = ({ userProfile }) => {
     try {
       const {
@@ -45,7 +49,8 @@ export default function Main (props) {
         userProfile,
         onLoadUserProfile,
         analysisResult,
-        onLoadAnalysisResult
+        onLoadAnalysisResult,
+        onUserProfileUpdate
       }}
     />
   );
