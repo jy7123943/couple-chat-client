@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Image, Modal, Linking } from 'react-native';
-import { Text, Button, List, ListItem } from 'native-base';
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { Text, Button, List, ListItem, Fab } from 'native-base';
+import { AntDesign, Entypo, Feather } from '@expo/vector-icons';
 import moment from 'moment';
 import { commonStyles } from '../../styles/Styles';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import { profileImgModifyApi } from '../../../utils/api';
 import { createImageForm } from '../../../utils/utils';
+import * as SecureStore from 'expo-secure-store';
 
 export default function ProfileModal (props) {
   const {
@@ -16,22 +17,20 @@ export default function ProfileModal (props) {
     userProfile,
     isUser,
     userInfo,
-    onUserProfileUpdate
+    onUserProfileUpdate,
+    setUserInfo
   } = props;
+
+  const [ isFabActive, setFabActive ] = useState(false);
 
   const profile = isUser ? userProfile.user : userProfile.partner;
 
   const onImageUpload = async (profileImageUri) => {
     try {
-      console.log(userInfo.token, '토큰!!!');
-
       const imgFormData = createImageForm(profileImageUri);
-      console.log(imgFormData, 'form데이터!')
-
       const response = await profileImgModifyApi(imgFormData, userInfo.token);
-      console.log('response!!',response);
+
       if (response.result === 'ok') {
-        // 사진 변경 성공
         const newUser = {
           ...userProfile.user,
           profileImageUrl: response.profileImageUrl
@@ -86,6 +85,12 @@ export default function ProfileModal (props) {
     }
   };
 
+  // const onLogout = async () => {
+  //   await SecureStore.deleteItemAsync('userInfo');
+  //   setUserInfo(null);
+  //   onModalClose(false);
+  // };
+
   console.log('MODAL:',userProfile)
 
   return (
@@ -109,7 +114,7 @@ export default function ProfileModal (props) {
         />
       </Button>
       <View style={{
-        flex: 2,
+        flex: 3,
         position: 'relative'
       }}>
         <Image
@@ -120,17 +125,35 @@ export default function ProfileModal (props) {
           style={styles.imageBox}
         />
         {isUser && (
-          <Button
-            transparent
-            style={styles.cameraBtn}
-            onPress={onImageSearch}
+          <Fab
+            active={isFabActive}
+            direction="left"
+            position="bottomRight"
+            style={{ backgroundColor: '#cbcbf8' }}
+            onPress={() => setFabActive(!isFabActive)}
           >
-            <Entypo
-              name="camera"
-              color="#ddd"
-              size={40}
-            />
-          </Button>
+            <Feather name="more-vertical" />
+            <Button
+              style={styles.fabBtn}
+              onPress={onImageSearch}
+            >
+              <Entypo
+                name="camera"
+                color="#fff"
+                size={20}
+              />
+            </Button>
+            <Button
+              style={styles.fabBtn}
+              // onPress={onLogout}
+            >
+              <AntDesign
+                name="logout"
+                color="#fff"
+                size={20}
+              />
+            </Button>
+          </Fab>
         )}
       </View>
       <List style={styles.list}>
@@ -189,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 30
+    marginBottom: 40
   },
   infoText: {
     color: '#999',
@@ -206,16 +229,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     borderBottomColor: 'transparent'
   },
-  cameraBtn: {
-    position: 'absolute',
-    bottom: 15,
-    left: 10,
-    zIndex: 1,
-    width: 60,
-    height: 60,
-    backgroundColor: '#999',
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center'
+  fabBtn: {
+    backgroundColor: '#afafc7',
   }
 });

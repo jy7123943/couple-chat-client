@@ -82,6 +82,11 @@ export default function SignUp (props) {
         );
         return navigation.navigate('Login');
       }
+
+      if (loginResponse.roomInfo) {
+        screenProps.setRoomInfo(loginResponse.roomInfo);
+        return navigation.navigate('Main');
+      }
       setLoading(false);
       return navigation.navigate('CoupleConnect');
     } catch(err) {

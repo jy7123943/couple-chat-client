@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Header, Text, Button, Left, Body, Container, Right } from 'native-base';
+import { Header, Text, Button, Left, Container, Right } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../../styles/Styles';
 import * as SecureStore from 'expo-secure-store';

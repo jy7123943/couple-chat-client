@@ -9,6 +9,7 @@ import { Notifications } from 'expo';
 import ProfileModal from '../../components/main/ProfileModal';
 import { FontAwesome } from '@expo/vector-icons';
 import Loading from '../../components/main/Loading';
+import Error from '../../components/main/Error';
 
 export default function Profile (props) {
   const {

@@ -4,6 +4,7 @@ import { commonStyles } from '../../styles/Styles';
 import { Button, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as SecureStore from 'expo-secure-store';
+import { getUserRoomInfoApi } from '../../../utils/api';
 
 export default function Home (props) {
   const {
@@ -14,20 +15,23 @@ export default function Home (props) {
   useEffect(() => {
     const authenticateUser = async (navigation, setUserInfo, setRoomInfo) => {
       // await SecureStore.deleteItemAsync('userInfo');
-      // await SecureStore.deleteItemAsync('roomInfo');
-      // await SecureStore.setItemAsync('roomInfo', JSON.stringify({"roomKey":"5da345da34","partnerId":"test17"}));
-      const userInfo = await SecureStore.getItemAsync('userInfo');
-      const roomInfo = await SecureStore.getItemAsync('roomInfo');
-      console.log('===== userInfo: ', userInfo);
-      console.log('===== roomInfo: ', roomInfo);
-      if (userInfo) {
-        setUserInfo(JSON.parse(userInfo));
+      const userInfoString = await SecureStore.getItemAsync('userInfo');
 
-        if (roomInfo) {
-          setRoomInfo(JSON.parse(roomInfo));
+      if (userInfoString) {
+        const userInfo = JSON.parse(userInfoString);
+        setUserInfo(userInfo);
+
+        const response = await getUserRoomInfoApi(userInfo.token);
+        console.log(response, 'RESPONSE');
+
+        if (response.result === 'ok') {
+          setRoomInfo(response.roomInfo);
           return navigation.navigate('Main');
         }
-        return navigation.navigate('CoupleConnect');
+
+        if (response.result === 'not found') {
+          return navigation.navigate('CoupleConnect');
+        }
       }
       return navigation.navigate('Home');
     };
@@ -40,7 +44,7 @@ export default function Home (props) {
     }
 
     authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
-  }, []);
+  }, [ props.screenProps.userInfo ]);
 
   return (
     <LinearGradient

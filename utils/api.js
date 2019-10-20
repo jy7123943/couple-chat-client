@@ -122,6 +122,18 @@ export const getUserInfoApi = (token) => {
     .catch(err => err.response.data);
 };
 
+export const getUserRoomInfoApi = (token) => {
+  return axios({
+    method: 'get',
+    url: `${apiUrl}/users/roomInfo`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(err => err.response.data);
+};
+
 export const getChatTextsApi = (token) => {
   return axios({
     method: 'get',

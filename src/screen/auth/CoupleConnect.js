@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 import t from 'tcomb-form-native';
-import * as SecureStore from 'expo-secure-store';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,8 +11,7 @@ import { commonStyles, formStyles } from '../../styles/Styles';
 export default function CoupleConnect (props) {
   const socket = io(apiUrl);
   const {
-    navigation,
-    // screenProps: { socket }
+    navigation
   } = props;
   const [ isLoading, setLoading ] = useState(false);
 
@@ -37,11 +35,8 @@ export default function CoupleConnect (props) {
     socket.on('completeConnection', async (roomInfo) => {
       const { screenProps } = props;
 
-      await SecureStore.setItemAsync('roomInfo', JSON.stringify(roomInfo));
-
       screenProps.setRoomInfo(roomInfo);
       setLoading(false);
-      console.log('RoomInfo============= ', roomInfo);
 
       navigation.navigate('Main');
     });
