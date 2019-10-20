@@ -10,6 +10,8 @@ import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Permissions from 'expo-permissions';
 import ViewShot from "react-native-view-shot";
+import moment from 'moment';
+import 'moment/min/locales';
 
 export default function ChatAnalysisResult (props) {
   const [ isLoading, setLoading ] = useState(true);
@@ -71,7 +73,9 @@ export default function ChatAnalysisResult (props) {
     sentiment,
     negativeTexts,
     positiveTexts,
-    totalScore
+    totalScore,
+    startDate,
+    endDate
   } = analysisResult;
   console.log(props.analysisResult);
 
@@ -191,6 +195,37 @@ export default function ChatAnalysisResult (props) {
                 backgroundColor: '#f7eed3'
               }}
             >
+              <View style={styles.listTitle}>
+                <MaterialCommunityIcons
+                  name="calendar-blank"
+                  size={20}
+                  style={{
+                    ...commonStyles.txtBlue,
+                    marginRight: 5
+                  }}
+                />
+                <Text style={commonStyles.txtBlue}>기간</Text>
+              </View>
+              <ListItem last style={styles.itemHorizontal}>
+                <View
+                  style={{
+                    ...styles.itemVertical,
+                    marginTop: 10
+                  }}
+                >
+                  <Text>
+                    {moment(startDate).locale('ko').format('LL')}
+                  </Text>
+                  <Text
+                    style={{marginLeft: 10, marginRight: 10}}
+                  >
+                    ~
+                  </Text>
+                  <Text>
+                    {moment(endDate).locale('ko').format('LL')}
+                  </Text>
+                </View>
+              </ListItem>
               <View style={styles.listTitle}>
                 <SimpleLineIcons
                   name="bubbles"
