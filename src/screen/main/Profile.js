@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Header, Text, Button } from 'native-base';
+import { StyleSheet, View, Image, TouchableHighlight } from 'react-native';
+import { Container, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../../styles/Styles';
+import { commonStyles } from '../../styles/Styles';
 import { getUserInfoApi } from '../../../utils/api';
-import {
-  Notifications
-} from 'expo';
+import { calculateDday } from '../../../utils/utils';
+import { Notifications } from 'expo';
+import ProfileModal from '../../components/main/ProfileModal';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function Profile (props) {
   const {
@@ -17,13 +18,18 @@ export default function Profile (props) {
       userInfo
     }
   } = props;
-  // console.log(userProfile, 'state: userProfile');
+
+  const [ isLoading, setLoading ] = useState(true);
+  const [ isUserModalVisible, setUserModalVisible ] = useState(false);
+  const [ isPartnerModalVisible, setPartnerModalVisible ] = useState(false);
+  console.log('STATE/userProfile: ', userProfile);
 
   useEffect(() => {
     const onLoad = async () => {
       try {
         const user = await getUserInfoApi(userInfo.token);
         onLoadUserProfile(user);
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -39,18 +45,93 @@ export default function Profile (props) {
     });
   }, []);
 
+  if (isLoading) {
+    return <View></View>;
+  }
+
+  const {
+    user,
+    partner
+  } = userProfile;
+
   return (
-    <View style={styles.container}>
-      <View>
-        <Text>Profile</Text>
-      </View>
-    </View>
+    <LinearGradient
+      colors={['#f7eed3', '#cbcbf8', '#afafc7']}
+      style={commonStyles.container}
+    >
+      {isUserModalVisible ? (
+        <ProfileModal
+          onModalClose={setUserModalVisible}
+          isModalVisible={isUserModalVisible}
+          userProfile={user}
+        />
+      ) : (
+        <ProfileModal
+          onModalClose={setPartnerModalVisible}
+          isModalVisible={isPartnerModalVisible}
+          userProfile={partner}
+        />
+      )}
+      <Container
+        style={{
+          ...commonStyles.headerContainer,
+          marginTop: 20
+        }}
+      >
+        <TouchableHighlight
+          style={styles.container}
+          onPress={() => setPartnerModalVisible(true)}
+        >
+          <Image
+            source={partner.profileImageUrl ?
+              { uri: partner.profileImageUrl } :
+              require('../../../assets/profile.jpg')
+            }
+            style={styles.imageBox}
+          />
+        </TouchableHighlight>
+        <View style={styles.ddayBox}>
+          <Text style={commonStyles.txtBlue}>
+            {`${calculateDday(new Date(user.firstMeetDay))}일째 사랑중`}
+          </Text>
+          <FontAwesome
+            name="heart-o"
+            color="#5f7daf"
+            style={{ marginLeft: 5 }}
+          />
+        </View>
+        <TouchableHighlight
+          style={styles.container}
+          onPress={() => setUserModalVisible(true)}
+        >
+          <Image
+            source={user.profileImageUrl ?
+              { uri: user.profileImageUrl } :
+              require('../../../assets/profile.jpg')
+            }
+            style={styles.imageBox}
+          />
+        </TouchableHighlight>
+      </Container>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding:10
+    flex: 3,
+    borderRadius: 10
+  },
+  imageBox: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+    marginBottom: 20
+  },
+  ddayBox: {
+    flex: 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
   }
 });

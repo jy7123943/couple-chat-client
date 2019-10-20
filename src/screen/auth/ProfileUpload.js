@@ -88,7 +88,10 @@ export default function ProfileUpload (props) {
       </Header>
       <View>
         <Image
-          source={profileImageUri ? { uri: profileImageUri } : require('../../../assets/profile.jpg')}
+          source={profileImageUri ?
+            { uri: profileImageUri } :
+            require('../../../assets/profile.jpg')
+        }
           style={styles.imageBox}
         />
         <Button
