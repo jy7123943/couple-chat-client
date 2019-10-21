@@ -1,16 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
-import t from 'tcomb-form-native';
 import * as SecureStore from 'expo-secure-store';
+import t from 'tcomb-form-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../../styles/Styles';
 import { loginApi, sendUserPushToken } from '../../../utils/api';
+import { commonStyles, formStyles } from '../../styles/Styles';
 
 export default function SignUp (props) {
   const { navigation, screenProps } = props;
   const [ isLoading, setLoading ] = useState(false);
   const Form = t.form.Form;
+
   const LoginType = t.struct({
     id: t.String,
     password: t.String
@@ -38,6 +39,7 @@ export default function SignUp (props) {
 
   const handleSubmit = async () => {
     const formValue = formRef.current.getValue();
+
     if (!formValue) {
       return;
     }
@@ -47,7 +49,6 @@ export default function SignUp (props) {
     try {
       setLoading(true);
       const loginResponse = await loginApi(id, password);
-      console.log(loginResponse, 'LoginResponse');
 
       if (loginResponse.Error || loginResponse === 'Unauthorized') {
         Alert.alert(
@@ -72,6 +73,7 @@ export default function SignUp (props) {
       const { token, userId } = loginResponse;
       await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
       screenProps.setUserInfo({ token, userId });
+
       const tokenSaveResult = await sendUserPushToken(token);
 
       if (tokenSaveResult.result !== 'ok') {
@@ -87,6 +89,7 @@ export default function SignUp (props) {
         screenProps.setRoomInfo(loginResponse.roomInfo);
         return navigation.navigate('Main');
       }
+
       setLoading(false);
       return navigation.navigate('CoupleConnect');
     } catch(err) {
@@ -117,7 +120,7 @@ export default function SignUp (props) {
           options={options}
           ref={formRef}
         />
-        {isLoading && <Spinner color='#5f7daf' />}
+        {isLoading && <Spinner color="#5f7daf" />}
         <Button
           block
           rounded
@@ -136,9 +139,7 @@ export default function SignUp (props) {
             ...commonStyles.lightBtn,
             ...commonStyles.marginTopSm
           }}
-          onPress={() => {
-            navigation.navigate('SignUp');
-          }}
+          onPress={() => navigation.navigate('SignUp')}
         >
           <Text>회원가입</Text>
         </Button>

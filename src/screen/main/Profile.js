@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, TouchableHighlight } from 'react-native';
+import { Notifications } from 'expo';
 import { Container, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FontAwesome } from '@expo/vector-icons';
 import { commonStyles } from '../../styles/Styles';
 import { getUserInfoApi } from '../../../utils/api';
 import { calculateDday } from '../../../utils/utils';
-import { Notifications } from 'expo';
 import ProfileModal from '../../components/main/ProfileModal';
-import { FontAwesome } from '@expo/vector-icons';
 import Loading from '../../components/main/Loading';
-import Error from '../../components/main/Error';
 
 export default function Profile (props) {
   const {
@@ -24,12 +23,12 @@ export default function Profile (props) {
   const [ isLoading, setLoading ] = useState(true);
   const [ isUserModalVisible, setUserModalVisible ] = useState(false);
   const [ isPartnerModalVisible, setPartnerModalVisible ] = useState(false);
-  console.log('STATE/userProfile: ', userProfile);
 
   useEffect(() => {
     const onLoad = async () => {
       try {
         const user = await getUserInfoApi(userInfo.token);
+
         onLoadUserProfile(user);
         setLoading(false);
       } catch (err) {
@@ -39,11 +38,10 @@ export default function Profile (props) {
 
     onLoad();
 
-    _notificationSubscription = Notifications.addListener((notification) => {
+    Notifications.addListener((notification) => {
       if (notification.origin === 'received') {
         navigation.navigate('ChatRoom');
       }
-      console.log('NOTI!!!!!:',notification);
     });
   }, []);
 
@@ -131,8 +129,8 @@ const styles = StyleSheet.create({
   imageBox: {
     width: '100%',
     height: '100%',
-    borderRadius: 10,
-    marginBottom: 20
+    marginBottom: 20,
+    borderRadius: 10
   },
   ddayBox: {
     flex: 0.8,

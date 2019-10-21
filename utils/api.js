@@ -1,38 +1,28 @@
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
+import axios from 'axios';
 import { Alert } from 'react-native';
 import getEnvVars from '../environment';
 const { apiUrl } = getEnvVars();
-import axios from 'axios';
 
 export const signUpApi = (user) => {
   return axios({
     method: 'post',
     url: `${apiUrl}/signUp`,
-    data: {
-      ...user
-    }
+    data: { ...user }
   })
     .then(res => res.data)
-    .catch(err => {
-      console.log(err);
-      return err.response.data;
-    });
+    .catch(err => err.response.data);
 };
 
 export const loginApi = (id, password) => {
   return axios({
     method: 'post',
     url: `${apiUrl}/login`,
-    data: {
-      id, password
-    }
+    data: { id, password }
   })
     .then(res => res.data)
-    .catch(err => {
-      console.log(err);
-      return err.response.data;
-    });
+    .catch(err => err.response.data);
 };
 
 export const profileImgUploadApi = (imgFormData, token) => {
@@ -64,7 +54,6 @@ export const profileImgModifyApi = (imgFormData, token) => {
 };
 
 export const sendUserPushToken = async (token) => {
-  console.log('--- sendUserPushToken ---');
   try {
     let { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
 
@@ -77,16 +66,13 @@ export const sendUserPushToken = async (token) => {
     }
 
     const pushToken = await Notifications.getExpoPushTokenAsync();
-    const channel = await Notifications.createChannelAndroidAsync('chat-messages', {
+    await Notifications.createChannelAndroidAsync('chat-messages', {
       name: 'Chat messages',
       sound: true,
       priority: 'max',
       vibrate: [0, 250, 250, 250]
     });
 
-    console.log('channel', channel);
-
-    console.log('push token: ', pushToken, token);
     return axios({
       method: 'put',
       url: `${apiUrl}/users/pushToken`,
@@ -125,7 +111,7 @@ export const getUserInfoApi = (token) => {
 export const getUserRoomInfoApi = (token) => {
   return axios({
     method: 'get',
-    url: `${apiUrl}/users/roomInfo`,
+    url: `${apiUrl}/users/room`,
     headers: {
       'Authorization': `Bearer ${token}`
     }

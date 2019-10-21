@@ -5,8 +5,8 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import { profileImgUploadApi } from '../../../utils/api';
 import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles } from '../../styles/Styles';
 import { createImageForm } from '../../../utils/utils';
+import { commonStyles } from '../../styles/Styles';
 
 export default function ProfileUpload (props) {
   const { navigation, screenProps } = props;
@@ -49,12 +49,10 @@ export default function ProfileUpload (props) {
 
   const onImageUpload = async () => {
     try {
-      console.log(profileImageUri);
-
       const imgFormData = createImageForm(profileImageUri);
 
       const response = await profileImgUploadApi(imgFormData, screenProps.userInfo.token);
-      console.log('response!!',response);
+
       if (response.result === 'ok') {
         navigation.navigate('CoupleConnect');
       } else {
@@ -115,9 +113,7 @@ export default function ProfileUpload (props) {
         <Button
           block
           transparent
-          onPress={() => {
-            navigation.navigate('CoupleConnect');
-          }}
+          onPress={() => navigation.navigate('CoupleConnect')}
         >
           <Text>나중에 하기</Text>
         </Button>
@@ -130,9 +126,9 @@ const styles = StyleSheet.create({
   imageBox: {
     width: '100%',
     height: 300,
-    borderRadius: 10,
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
+    borderRadius: 10
   },
   uploadBtn: {
     marginBottom: 10

@@ -6,10 +6,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import io from 'socket.io-client';
 import moment from 'moment';
 import 'moment/min/locales';
 import { getChatTextsApi } from '../../../utils/api';
-import io from 'socket.io-client';
+import { verifyDateChange } from '../../../utils/utils';
 import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 
@@ -19,18 +20,15 @@ export default class ChatRoom extends Component {
 
     this.state = {
       text: '',
-      isLoading: false,
       chatTextList: [],
+      isLoading: false,
       isError: false
     };
 
-    this.socket = io(apiUrl, {
-      autoConnect: false
-    });
+    this.socket = io(apiUrl, { autoConnect: false });
   }
 
   componentDidMount() {
-    console.log('component did mount');
     const {
       navigation,
       screenProps: {
@@ -48,8 +46,8 @@ export default class ChatRoom extends Component {
           ...this.state,
           isLoading: true
         });
+
         const { chats } = await getChatTextsApi(userInfo.token);
-        console.log(chats);
         this.onLoadChatTextList(chats);
       } catch (err) {
         console.log(err);
@@ -73,8 +71,6 @@ export default class ChatRoom extends Component {
         isError: true
       });
       console.log('chatroom socket error', err);
-      console.log(err.message);
-      console.error(err);
     });
 
     this.socket.on('disconnect', () => {
@@ -82,17 +78,16 @@ export default class ChatRoom extends Component {
     });
 
     this.socket.on('sendMessage', ({ chat }) => {
-      const {
-        chatTextList
-      } = this.state;
-      console.log('sendMessage', chat);
-      const copiedChatList = chatTextList.slice();
+      const { chatTextList } = this.state;
 
-      this.onLoadChatTextList(copiedChatList.concat([{
+      const copiedChatList = chatTextList.slice();
+      const newChat = [{
         text: chat.text,
         created_at: chat.time,
         user_id: chat.userId
-      }]));
+      }];
+
+      this.onLoadChatTextList(copiedChatList.concat(newChat));
     });
   }
 
@@ -196,12 +191,7 @@ export default class ChatRoom extends Component {
           </Header>
         </View>
         <KeyboardAvoidingView
-          style={{
-            flex: 6,
-            padding: 4,
-            paddingTop: 15,
-            paddingBottom: 15,
-          }}
+          style={styles.chatBoxWrap}
           behavior="padding"
           enabled
         >
@@ -216,12 +206,6 @@ export default class ChatRoom extends Component {
                   const isPartner = chat.user_id === partnerId;
                   const isFirstPartner = isPartner && (i === 0 || chatTextList[i - 1].user_id !== partnerId);
                   const imageUrl = userProfile.partner.profileImageUrl;
-
-                  const verifyDateChange = (today, yesterday) => {
-                    return (today.getDate() - yesterday.getDate()) !== 0
-                    || today.getMonth() !== yesterday.getMonth()
-                    || today.getFullYear() !== yesterday.getFullYear()
-                  };
 
                   const isDateChanged = (i === 0) || verifyDateChange(
                     new Date(chatTextList[i - 1].created_at),
@@ -277,7 +261,7 @@ export default class ChatRoom extends Component {
                   );
                 })
               )}
-              {isLoading && <Spinner color='#5f7daf' />}
+              {isLoading && <Spinner color="#5f7daf" />}
             </>
           </ScrollView>
           <View style={{
@@ -322,16 +306,22 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignSelf: 'flex-start',
     maxWidth: '75%',
-    backgroundColor: '#fff',
     marginBottom: 10,
-    borderRadius: 15,
     padding: 5,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
+    borderRadius: 15,
+    backgroundColor: '#fff'
+  },
+  chatBoxWrap: {
+    flex: 6,
+    padding: 4,
+    paddingTop: 15,
+    paddingBottom: 15,
   },
   textLeft: {
-    marginRight: 'auto',
-    marginLeft: 40
+    marginLeft: 40,
+    marginRight: 'auto'
   },
   textRight: {
     marginLeft: 'auto'
@@ -346,7 +336,7 @@ const styles = StyleSheet.create({
     left: -45
   },
   timeRight: {
-    right: -45,
+    right: -45
   },
   imageBox: {
     position: 'absolute',
@@ -356,14 +346,14 @@ const styles = StyleSheet.create({
     height: 35
   },
   dateBox: {
-    fontSize: 12,
-    color: '#fff',
-    borderRadius: 15,
+    marginTop: 20,
+    marginBottom: 10,
     padding: 5,
     paddingLeft: 15,
     paddingRight: 15,
-    marginTop: 20,
-    marginBottom: 10,
+    fontSize: 12,
+    color: '#fff',
+    borderRadius: 15,
     backgroundColor: 'rgba(152, 164, 158, 0.6)'
   }
 });

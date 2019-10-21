@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { commonStyles } from '../../styles/Styles';
 import { Button, Text } from 'native-base';
@@ -22,7 +22,6 @@ export default function Home (props) {
         setUserInfo(userInfo);
 
         const response = await getUserRoomInfoApi(userInfo.token);
-        console.log(response, 'RESPONSE');
 
         if (response.result === 'ok') {
           setRoomInfo(response.roomInfo);
@@ -44,7 +43,7 @@ export default function Home (props) {
     }
 
     authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
-  }, [ props.screenProps.userInfo ]);
+  }, []);
 
   return (
     <LinearGradient
@@ -66,9 +65,7 @@ export default function Home (props) {
             ...styles.joinButton,
             ...commonStyles.darkBtn
           }}
-          onPress={() => {
-            navigation.navigate('SignUp');
-          }}
+          onPress={() => navigation.navigate('SignUp')}
         >
           <Text>회원가입</Text>
         </Button>
@@ -76,9 +73,7 @@ export default function Home (props) {
           block
           rounded
           style={commonStyles.lightBtn}
-          onPress={() => {
-            navigation.navigate('Login');
-          }}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text>로그인</Text>
         </Button>
@@ -101,7 +96,7 @@ const styles = StyleSheet.create({
   mainImage: {
     width: '100%',
     height: 350,
-    borderRadius: 25,
-    marginBottom: 80
+    marginBottom: 80,
+    borderRadius: 25
   }
 });

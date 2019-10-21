@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, Modal, Linking } from 'react-native';
-import { Text, Button, List, ListItem, Fab } from 'native-base';
-import { AntDesign, Entypo, Feather } from '@expo/vector-icons';
-import moment from 'moment';
-import { commonStyles } from '../../styles/Styles';
+import React from 'react';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { profileImgModifyApi } from '../../../utils/api';
+import moment from 'moment';
+import { StyleSheet, View, Image, Modal, Linking } from 'react-native';
+import { Text, Button, List, ListItem } from 'native-base';
+import { AntDesign, Entypo } from '@expo/vector-icons';
+import { commonStyles } from '../../styles/Styles';
 import { createImageForm } from '../../../utils/utils';
-import * as SecureStore from 'expo-secure-store';
+import { profileImgModifyApi } from '../../../utils/api';
 
 export default function ProfileModal (props) {
   const {
@@ -17,11 +16,8 @@ export default function ProfileModal (props) {
     userProfile,
     isUser,
     userInfo,
-    onUserProfileUpdate,
-    setUserInfo
+    onUserProfileUpdate
   } = props;
-
-  const [ isFabActive, setFabActive ] = useState(false);
 
   const profile = isUser ? userProfile.user : userProfile.partner;
 
@@ -35,6 +31,7 @@ export default function ProfileModal (props) {
           ...userProfile.user,
           profileImageUrl: response.profileImageUrl
         };
+
         onUserProfileUpdate(newUser, userProfile.partner);
       } else {
         throw new Error('image upload failed');
@@ -52,6 +49,7 @@ export default function ProfileModal (props) {
   const onImageSearch = async () => {
     try {
       const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+
       if (status !== 'granted') {
         const newPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
@@ -71,7 +69,7 @@ export default function ProfileModal (props) {
         return;
       }
 
-      console.log(imageFile.uri);
+      console.log('이미지 업로드--------',imageFile.uri);
       onImageUpload(imageFile.uri);
     } catch (err) {
       if (err.message === 'permission not granted') {
@@ -85,14 +83,6 @@ export default function ProfileModal (props) {
     }
   };
 
-  // const onLogout = async () => {
-  //   await SecureStore.deleteItemAsync('userInfo');
-  //   setUserInfo(null);
-  //   onModalClose(false);
-  // };
-
-  console.log('MODAL:',userProfile)
-
   return (
     <Modal
       animationType="slide"
@@ -101,10 +91,7 @@ export default function ProfileModal (props) {
     >
       <Button
         transparent
-        onPress={() => {
-          console.log('닫기')
-          onModalClose(false);
-        }}
+        onPress={() => onModalClose(false)}
         style={styles.closeBtn}
       >
         <AntDesign
@@ -113,10 +100,7 @@ export default function ProfileModal (props) {
           color="#fff"
         />
       </Button>
-      <View style={{
-        flex: 3,
-        position: 'relative'
-      }}>
+      <View style={styles.modalWrap}>
         <Image
           source={profile.profileImageUrl ?
             { uri: profile.profileImageUrl } :
@@ -125,35 +109,16 @@ export default function ProfileModal (props) {
           style={styles.imageBox}
         />
         {isUser && (
-          <Fab
-            active={isFabActive}
-            direction="left"
-            position="bottomRight"
-            style={{ backgroundColor: '#cbcbf8' }}
-            onPress={() => setFabActive(!isFabActive)}
+          <Button
+            style={styles.cameraBtn}
+            onPress={onImageSearch}
           >
-            <Feather name="more-vertical" />
-            <Button
-              style={styles.fabBtn}
-              onPress={onImageSearch}
-            >
-              <Entypo
-                name="camera"
-                color="#fff"
-                size={20}
-              />
-            </Button>
-            <Button
-              style={styles.fabBtn}
-              // onPress={onLogout}
-            >
-              <AntDesign
-                name="logout"
-                color="#fff"
-                size={20}
-              />
-            </Button>
-          </Fab>
+            <Entypo
+              name="camera"
+              color="#fff"
+              size={40}
+            />
+          </Button>
         )}
       </View>
       <List style={styles.list}>
@@ -182,9 +147,7 @@ export default function ProfileModal (props) {
             ...commonStyles.textCenter,
             ...styles.listItem
           }}
-          onPress={() => {
-            Linking.openURL(`tel:${profile.phoneNumber}`);
-          }}
+          onPress={() => Linking.openURL(`tel:${profile.phoneNumber}`)}
         >
           <Text style={styles.infoText}>
             {profile.phoneNumber}
@@ -196,6 +159,10 @@ export default function ProfileModal (props) {
 }
 
 const styles = StyleSheet.create({
+  modalWrap: {
+    flex: 3,
+    position: 'relative'
+  },
   imageBox: {
     width: '100%',
     height: '100%'
@@ -229,7 +196,14 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     borderBottomColor: 'transparent'
   },
-  fabBtn: {
+  cameraBtn: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     backgroundColor: '#afafc7',
+    justifyContent: 'center'
   }
 });

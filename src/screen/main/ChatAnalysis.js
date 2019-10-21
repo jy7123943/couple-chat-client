@@ -16,6 +16,7 @@ export default function ChatAnalysis (props) {
       onLoadAnalysisResult
     }
   } = props;
+
   const [ isLoading, setLoading ] = useState(false);
 
   const handleBtnPress = async () => {
@@ -37,6 +38,7 @@ export default function ChatAnalysis (props) {
         onLoadAnalysisResult(response.analysis_report);
         setLoading(false);
       }
+
       navigation.navigate('ChatAnalysisResult');
     } catch (err) {
       console.log(err);
@@ -62,33 +64,23 @@ export default function ChatAnalysis (props) {
         </View>
         <View style={{flex: 1}}>
           <Text
-            style={{
-              width: '100%',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 25
-            }}
+            style={styles.title}
           >
             대화로 분석하는 연애 점수
           </Text>
           <Text
-            style={{
-              width: '100%',
-              textAlign: 'center',
-              fontSize: 18,
-              padding: 20
-            }}
+            style={styles.description}
           >
             {user.name}님 커플은 얼마나 대화를 자주 하고 있을까요? 최근 30일 동안의 채팅 대화들을 분석하여 {user.name}님 커플의 연애 점수를 알려드립니다.
           </Text>
           {isLoading && (
-            <Spinner color='#5f7daf' />
+            <Spinner color="#5f7daf" />
           )}
         </View>
         <Button
           block
           rounded
-          style={{backgroundColor: '#907af0'}}
+          style={{ backgroundColor: '#907af0' }}
           onPress={handleBtnPress}
         >
           <Text>지금 분석하기</Text>
@@ -107,5 +99,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     marginTop: 50
+  },
+  title: {
+    width: '100%',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 25
+  },
+  description: {
+    width: '100%',
+    padding: 20,
+    textAlign: 'center',
+    fontSize: 18
   }
 });

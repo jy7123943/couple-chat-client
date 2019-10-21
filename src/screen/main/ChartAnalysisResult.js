@@ -2,16 +2,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Image, Alert, ScrollView, CameraRoll } from 'react-native';
 import { Container, Header, Text, Button, Content, ListItem } from 'native-base';
-import { commonStyles } from '../../styles/Styles';
 import PureChart from 'react-native-pure-chart';
-import { SimpleLineIcons, MaterialCommunityIcons, Entypo,
-  AntDesign } from '@expo/vector-icons';
+import { SimpleLineIcons, MaterialCommunityIcons, Entypo, AntDesign } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Permissions from 'expo-permissions';
 import ViewShot from "react-native-view-shot";
 import moment from 'moment';
 import 'moment/min/locales';
+import { commonStyles } from '../../styles/Styles';
 import Loading from '../../components/main/Loading';
 
 export default function ChatAnalysisResult (props) {
@@ -84,6 +83,7 @@ export default function ChatAnalysisResult (props) {
     ],
     color: '#afc7bd'
   }];
+
   const textBalanceData = [{
     data: [
       {x: `${user.name}님`, y: balance.user},
@@ -152,6 +152,7 @@ export default function ChatAnalysisResult (props) {
     try {
       await SecureStore.deleteItemAsync('analysisResult');
       onLoadAnalysisResult(null);
+
       return Alert.alert(
         '완료',
         '삭제되었습니다.',
@@ -186,10 +187,8 @@ export default function ChatAnalysisResult (props) {
         <Content style={{flex: 1}}>
           <ScrollView>
             <ViewShot
-              ref={scrollViewRef} options={{ format: "jpg", quality: 1 }}
-              style={{
-                backgroundColor: '#f7eed3'
-              }}
+              ref={scrollViewRef} options={{ format: 'jpg', quality: 1 }}
+              style={{ backgroundColor: '#f7eed3' }}
             >
               <View style={styles.listTitle}>
                 <MaterialCommunityIcons
@@ -212,9 +211,7 @@ export default function ChatAnalysisResult (props) {
                   <Text>
                     {moment(startDate).locale('ko').format('LL')}
                   </Text>
-                  <Text
-                    style={{marginLeft: 10, marginRight: 10}}
-                  >
+                  <Text style={styles.middleIcon}>
                     ~
                   </Text>
                   <Text>
@@ -256,9 +253,7 @@ export default function ChatAnalysisResult (props) {
                   }}
                 >
                   <Text>우리 커플 대화량</Text>
-                  <Text
-                    style={{marginLeft: 10, marginRight: 10}}
-                  >
+                  <Text style={styles.middleIcon}>
                     {markBigSmallIcon(textAmount.userRoom, textAmount.average)}
                   </Text>
                   <Text>다른 커플 평균</Text>
@@ -278,7 +273,10 @@ export default function ChatAnalysisResult (props) {
               <ListItem last style={styles.itemHorizontal}>
                 <Text>
                   <Text
-                    style={{...styles.scoreText, color: '#ffbf74'}}
+                    style={{
+                      ...styles.scoreText,
+                      color: '#ffbf74'
+                    }}
                   >
                     {parseInt(balance.score)}
                   </Text>
@@ -298,9 +296,7 @@ export default function ChatAnalysisResult (props) {
                   }}
                 >
                   <Text>{`${user.name}님`}</Text>
-                  <Text
-                    style={{marginLeft: 10, marginRight: 10}}
-                  >
+                  <Text style={styles.middleIcon}>
                     {markBigSmallIcon(balance.user, balance.partner)}
                   </Text>
                   <Text>{`${partner.name}님`}</Text>
@@ -345,14 +341,14 @@ export default function ChatAnalysisResult (props) {
               </View>
               <ListItem
                 last
-                style={{flexWrap: 'wrap'}}
+                style={{ flexWrap: 'wrap' }}
               >
                 {positiveTexts.map((text, i) => (
                   <Text
                     key={i}
                     style={{
-                      backgroundColor: '#c3e2ce',
-                      ...styles.tag
+                      ...styles.tag,
+                      backgroundColor: '#c3e2ce'
                     }}
                   >
                     {text}
@@ -404,11 +400,7 @@ export default function ChatAnalysisResult (props) {
               </View>
             </ViewShot>
             <View>
-              <Text style={{
-                fontSize: 14,
-                color: '#999',
-                textAlign: 'center'
-              }}>
+              <Text style={styles.infoMessage}>
                 결과 보고서는 다음 분석 전까지 보관되지만 어플 삭제나 계정 전환 등의 사유로 삭제될 수 있습니다. 안전하게 보관하려면 이미지로 저장해주시기 바랍니다.
               </Text>
             </View>
@@ -422,21 +414,14 @@ export default function ChatAnalysisResult (props) {
         >
           <Button
             rounded
-            style={{
-              flex: 4,
-              marginRight: 5,
-              backgroundColor: '#907af0'
-            }}
+            style={styles.saveBtn}
             onPress={onImageSave}
           >
             <Text>이미지로 저장하기</Text>
           </Button>
           <Button
             rounded
-            style={{
-              flex: 1,
-              backgroundColor: '#f07a7a'
-            }}
+            style={styles.delBtn}
             onPress={onAnalysisDelete}
           >
             <AntDesign
@@ -492,5 +477,23 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginTop: 20,
     marginBottom: 20
+  },
+  middleIcon: {
+    marginLeft: 10,
+    marginRight: 10
+  },
+  infoMessage: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
+  },
+  saveBtn: {
+    flex: 4,
+    marginRight: 5,
+    backgroundColor: '#907af0'
+  },
+  delBtn: {
+    flex: 1,
+    backgroundColor: '#f07a7a'
   }
 });

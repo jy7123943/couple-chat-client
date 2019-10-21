@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
-import { Header, Text, Button, Left, Container, Right } from 'native-base';
-import { LinearGradient } from 'expo-linear-gradient';
-import { commonStyles, formStyles } from '../../styles/Styles';
 import * as SecureStore from 'expo-secure-store';
 import t from 'tcomb-form-native';
-import {
-  REGEX_ID,
-  REGEX_PASSWORD,
-  REGEX_NAME,
-  REGEX_PHONE_NUM,
-  FORM_CONFIG
-} from '../../../utils/validation';
-import { signUpApi, loginApi, sendUserPushToken } from '../../../utils/api';
+import { StyleSheet, View, Alert } from 'react-native';
+import { Header, Text, Button, Left, Container, Right } from 'native-base';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
+import { commonStyles, formStyles } from '../../styles/Styles';
+import { REGEX_ID, REGEX_PASSWORD, REGEX_NAME, REGEX_PHONE_NUM, FORM_CONFIG } from '../../../utils/validation';
+import { signUpApi, loginApi, sendUserPushToken } from '../../../utils/api';
 
 const Form = t.form.Form;
 
@@ -57,15 +51,13 @@ export default class SignUp extends Component {
     const { navigation, screenProps } = this.props;
 
     var formValue = this.refs.form.getValue();
-    console.log(formValue);
+
     if (!formValue) {
       return;
     }
 
     try {
-      console.log('before sign up')
       const joinResponse = await signUpApi(formValue);
-      console.log('joinResponse', joinResponse);
 
       if (joinResponse.validationError) {
         Alert.alert(
@@ -129,9 +121,7 @@ export default class SignUp extends Component {
             <Left>
               <Button
                 transparent
-                onPress={() => {
-                  navigation.navigate('Home');
-                }}
+                onPress={() => navigation.navigate('Home')}
               >
                 <AntDesign
                   name="left"
@@ -177,8 +167,8 @@ export default class SignUp extends Component {
 
 const styles = StyleSheet.create({
   scrollBox: {
+    flex: 6,
     paddingTop: 20,
-    paddingBottom: 20,
-    flex: 6
+    paddingBottom: 20
   }
 });

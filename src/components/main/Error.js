@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Modal } from 'react-native';
 import { Button, Text } from 'native-base';
-import { commonStyles } from '../../styles/Styles';
 import { MaterialIcons } from '@expo/vector-icons';
+import { commonStyles } from '../../styles/Styles';
 
 export default function Error () {
   return (
@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#afafc7',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#afafc7'
   },
   title: {
     fontSize: 30,
@@ -51,9 +51,9 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   errorBtn: {
-    marginTop: 20,
     width: 50,
     height: 50,
+    marginTop: 20,
     justifyContent: 'center'
   }
 });

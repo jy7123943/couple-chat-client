@@ -12,15 +12,15 @@ export const commonStyles = StyleSheet.create({
     padding: 20
   },
   header: {
-    backgroundColor: 'transparent',
-    textAlignVertical: 'center',
-    textAlign: 'center',
     height: 70,
     paddingTop: 25,
     elevation: 0,
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    fontSize: 50,
     borderBottomWidth: 1,
     borderBottomColor: '#afafc7',
-    fontSize: 50
+    backgroundColor: 'transparent'
   },
   txtBlue: {
     color: '#5f7daf'
@@ -52,14 +52,14 @@ export const formStyles = {
   ...Form.stylesheet,
   controlLabel: {
     normal: {
+      marginBottom: 5,
       fontSize: 16,
-      color: '#5f7daf',
-      marginBottom: 5
+      color: '#5f7daf'
     },
     error: {
+      marginBottom: 5,
       fontSize: 16,
-      color: '#5f7daf',
-      marginBottom: 5
+      color: '#5f7daf'
     }
   },
   errorBlock: {

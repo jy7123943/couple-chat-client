@@ -12,9 +12,7 @@ export default function Main (props) {
 
   const onLoadUserProfile = ({ userProfile }) => {
     try {
-      const {
-        partner_id: partner
-      } = userProfile;
+      const { partner_id: partner } = userProfile;
 
       setUserProfile({
         user: {
@@ -32,9 +30,8 @@ export default function Main (props) {
           profileImageUrl: partner.profile_image_url
         }
       });
-      console.log('partner', partner);
     } catch (err) {
-      console.log('timeout error',err);
+      console.log(err);
     }
   };
 
@@ -47,8 +44,8 @@ export default function Main (props) {
       screenProps={{
         ...screenProps,
         userProfile,
-        onLoadUserProfile,
         analysisResult,
+        onLoadUserProfile,
         onLoadAnalysisResult,
         onUserProfileUpdate
       }}

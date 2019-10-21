@@ -1,11 +1,11 @@
 import React from 'react';
+import { StyleSheet, Image } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import Profile from './Profile';
 import ChatRoom from './ChatRoom';
 import ChatAnalysis from './ChatAnalysis';
 import ChatAnalysisResult from './ChartAnalysisResult';
-import { StyleSheet, Image } from 'react-native';
 
 const TabBarComponent = props => <BottomTabBar {...props} />;
 
@@ -64,8 +64,7 @@ const Tab = createBottomTabNavigator({
       )
     }
   }
-},
-{
+}, {
   tabBarOptions: {
     showLabel: false
   },
@@ -91,4 +90,3 @@ const styles = StyleSheet.create({
 });
 
 export default createAppContainer(Tab);
-

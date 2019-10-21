@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import getEnvVars from '../../../environment';
-const { apiUrl } = getEnvVars();
 import t from 'tcomb-form-native';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../../styles/Styles';
+import getEnvVars from '../../../environment';
+const { apiUrl } = getEnvVars();
 
 export default function CoupleConnect (props) {
   const socket = io(apiUrl);
+
   const {
     navigation
   } = props;
+
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function CoupleConnect (props) {
   }, []);
 
   const Form = t.form.Form;
+
   const Type = t.struct({
     partnerId: t.String
   });
@@ -94,7 +97,7 @@ export default function CoupleConnect (props) {
         style={commonStyles.container}
       >
         <View style={styles.container}>
-          <Spinner color='#5f7daf' />
+          <Spinner color="#5f7daf" />
           <Button
             block
             rounded
