@@ -44,7 +44,7 @@ export default function CoupleConnect (props) {
     });
 
     return () => {
-      socket.disconect();
+      socket.disconnect();
       socket.removeAllListeners();
     };
   }, []);

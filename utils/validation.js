@@ -24,6 +24,13 @@ export const REGEX_PHONE_NUM = t.refinement(t.String, (phoneNumber) => {
   return reg.test(phoneNumber);
 });
 
+export const REGEX_PERSONAL_MESSAGE = t.refinement(t.String, (message) => {
+  if (message.trim().length > 50) {
+    return false;
+  }
+  return true;
+});
+
 export const FORM_CONFIG = {
   id: {
     label: '아이디 *',
@@ -74,5 +81,24 @@ export const FORM_CONFIG = {
       format: (date) => moment(date).format('YYYY-MM-DD'),
       defaultValueText: null
     }
+  }
+};
+
+export const EDIT_FORM_CONFIG = {
+  name: {
+    label: '이름',
+    help: '1~10자 한글 또는 영문',
+    error: '이름 형식이 올바르지 않습니다.'
+  },
+  phone_number: {
+    label: '핸드폰 번호',
+    help: '-없이 숫자만 입력 가능',
+    error: '핸드폰 번호 형식이 올바르지 않습니다.',
+    keyboardType: 'phone-pad'
+  },
+  personal_message: {
+    label: '상태 메시지',
+    help: '0~50자 입력 가능',
+    error: '0~50자 이내로 입력해주세요'
   }
 };

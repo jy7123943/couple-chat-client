@@ -351,7 +351,7 @@ export default function ChatAnalysisResult (props) {
                       backgroundColor: '#c3e2ce'
                     }}
                   >
-                    {text}
+                    {text.replace(/[\.]/g, ' ')}
                   </Text>
                 ))}
               </ListItem>
@@ -380,7 +380,7 @@ export default function ChatAnalysisResult (props) {
                       ...styles.tag
                     }}
                   >
-                    {text}
+                    {text.replace(/[\.]/g, ' ')}
                   </Text>
                 ))}
               </ListItem>

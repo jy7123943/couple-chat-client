@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import moment from 'moment';
-import { StyleSheet, View, Image, Modal, Linking } from 'react-native';
-import { Text, Button, List, ListItem } from 'native-base';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { commonStyles } from '../../styles/Styles';
+import t from 'tcomb-form-native';
+import { StyleSheet, View, Image, Modal, Linking, Alert } from 'react-native';
+import { Text, Button, List, ListItem, Fab } from 'native-base';
+import { AntDesign, Entypo, Feather } from '@expo/vector-icons';
+import { commonStyles, formStyles } from '../../styles/Styles';
 import { createImageForm } from '../../../utils/utils';
-import { profileImgModifyApi } from '../../../utils/api';
+import { profileImgModifyApi, modifyProfileApi } from '../../../utils/api';
+import { REGEX_NAME, REGEX_PHONE_NUM, REGEX_PERSONAL_MESSAGE, EDIT_FORM_CONFIG } from '../../../utils/validation';
 
 export default function ProfileModal (props) {
   const {
@@ -18,6 +20,22 @@ export default function ProfileModal (props) {
     userInfo,
     onUserProfileUpdate
   } = props;
+
+  const Form = t.form.Form;
+
+  const [ isFabActive, setFabActive ] = useState(false);
+  const [ isEditMode, setEditMode ] = useState(false);
+
+  const options = {
+    stylesheet: formStyles,
+    fields: EDIT_FORM_CONFIG
+  };
+
+  const EDIT_TYPE = t.struct({
+    name: REGEX_NAME,
+    phone_number: t.maybe(REGEX_PHONE_NUM),
+    personal_message: t.maybe(REGEX_PERSONAL_MESSAGE)
+  });
 
   const profile = isUser ? userProfile.user : userProfile.partner;
 
@@ -83,6 +101,53 @@ export default function ProfileModal (props) {
     }
   };
 
+  const formRef = useRef(null);
+  const handleSubmit = async () => {
+    const formValue = formRef.current.getValue();
+
+    if (!formValue) {
+      return;
+    }
+
+    const response = await modifyProfileApi(userInfo.token, formValue);
+
+    setEditMode(false);
+    if (response.validationError) {
+      return Alert.alert(
+        '실패',
+        response.validationError,
+        [{ text: '확인' }]
+      );
+    }
+
+    if (response.result !== 'ok') {
+      return Alert.alert(
+        '실패',
+        '프로필 편집에 실패했습니다.',
+        [{ text: '확인' }]
+      );
+    }
+
+    const newUser = {
+      ...userProfile.user,
+      name: formValue.name,
+      personalMessage: formValue.personal_message,
+      phoneNumber: formValue.phone_number
+    };
+
+    onUserProfileUpdate(newUser, userProfile.partner);
+  };
+
+  const cancelSubmit = () => {
+    setEditMode(false);
+  };
+
+  const DEFAULT_VALUE = {
+    name: profile.name,
+    phone_number: profile.phoneNumber,
+    personal_message: profile.personalMessage ? profile.personalMessage : ''
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -101,6 +166,9 @@ export default function ProfileModal (props) {
         />
       </Button>
       <View style={styles.modalWrap}>
+        <Text style={styles.personalMessage}>
+          {profile.personalMessage ? profile.personalMessage : '하단의 버튼을 눌러 상태메시지를 입력해보세요'}
+        </Text>
         <Image
           source={profile.profileImageUrl ?
             { uri: profile.profileImageUrl } :
@@ -109,58 +177,114 @@ export default function ProfileModal (props) {
           style={styles.imageBox}
         />
         {isUser && (
-          <Button
-            style={styles.cameraBtn}
-            onPress={onImageSearch}
+          <Fab
+            active={isFabActive}
+            direction="left"
+            position="bottomRight"
+            style={styles.fabBigBtn}
+            onPress={() => setFabActive(!isFabActive)}
           >
-            <Entypo
-              name="camera"
-              color="#fff"
-              size={40}
-            />
-          </Button>
+            <Feather name="more-vertical" />
+            <Button
+              style={styles.fabBtn}
+              onPress={onImageSearch}
+            >
+              <Entypo
+                name="camera"
+                color="#fff"
+                size={20}
+              />
+            </Button>
+            {!isEditMode ? (
+              <Button
+                style={styles.fabBtn}
+                onPress={() => setEditMode(!isEditMode)}
+              >
+                <AntDesign
+                  name="edit"
+                  color="#fff"
+                  size={20}
+                />
+              </Button>
+            ) : (
+              <Button
+                style={styles.fabBtn}
+                onPress={handleSubmit}
+              >
+                <AntDesign
+                  name="save"
+                  color="#fff"
+                  size={20}
+                />
+              </Button>
+            )}
+            {isEditMode && (
+              <Button
+                style={styles.fabBtn}
+                onPress={cancelSubmit}
+              >
+                <AntDesign
+                  name="close"
+                  color="#fff"
+                  size={20}
+                />
+              </Button>
+            )}
+          </Fab>
         )}
       </View>
-      <List style={styles.list}>
-        <ListItem
-          style={{
-            ...commonStyles.textCenter,
-            ...styles.listItem
-          }}
-        >
-          <Text style={styles.title}>
-            {profile.name}
-          </Text>
-        </ListItem>
-        <ListItem
-          style={{
-            ...commonStyles.textCenter,
-            ...styles.listItem
-          }}
-        >
-          <Text style={styles.infoText}>
-            {moment(profile.birthday).locale('ko').format('YYYY MMM Do dddd')}
-          </Text>
-        </ListItem>
-        <ListItem
-          style={{
-            ...commonStyles.textCenter,
-            ...styles.listItem
-          }}
-          onPress={() => Linking.openURL(`tel:${profile.phoneNumber}`)}
-        >
-          <Text style={styles.infoText}>
-            {profile.phoneNumber}
-          </Text>
-        </ListItem>
-      </List>
+      {!isEditMode && (
+        <List style={styles.list}>
+          <ListItem
+            style={{
+              ...commonStyles.textCenter,
+              ...styles.listItem
+            }}
+          >
+            <Text style={styles.title}>
+              {profile.name}
+            </Text>
+          </ListItem>
+          <ListItem
+            style={{
+              ...commonStyles.textCenter,
+              ...styles.listItem
+            }}
+          >
+            <Text style={styles.infoText}>
+              {moment(profile.birthday).locale('ko').format('YYYY MMM Do dddd')}
+            </Text>
+          </ListItem>
+          <ListItem
+            style={{
+              ...commonStyles.textCenter,
+              ...styles.listItem
+            }}
+            onPress={() => Linking.openURL(`tel:${profile.phoneNumber}`)}
+          >
+            <Text style={styles.infoText}>
+              {profile.phoneNumber}
+            </Text>
+          </ListItem>
+        </List>
+      )}
+      {isEditMode && (
+        <View style={styles.formWrap}>
+          <Form
+            type={EDIT_TYPE}
+            options={options}
+            value={DEFAULT_VALUE}
+            ref={formRef}
+          />
+        </View>
+      )}
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   modalWrap: {
-    flex: 3,
+    flex: 2,
     position: 'relative'
   },
   imageBox: {
@@ -173,12 +297,12 @@ const styles = StyleSheet.create({
     left: 10,
     width: 50,
     height: 50,
-    zIndex: 1
+    zIndex: 10
   },
   title: {
     fontSize: 50,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#666',
     marginBottom: 40
   },
   infoText: {
@@ -196,14 +320,31 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     borderBottomColor: 'transparent'
   },
-  cameraBtn: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+  fabBigBtn: {
+    backgroundColor: '#cbcbf8',
+    zIndex: 10
+  },
+  fabBtn: {
     backgroundColor: '#afafc7',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    zIndex: 10
+  },
+  personalMessage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    padding: 30,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: '#fff',
+    zIndex: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+  },
+  formWrap: {
+    padding: 30,
+    paddingTop: 20,
+    paddingBottom: 20
   }
 });

@@ -54,6 +54,8 @@ export default function Profile (props) {
     partner
   } = userProfile;
 
+  console.log(user, partner);
+
   return (
     <LinearGradient
       colors={['#f7eed3', '#cbcbf8', '#afafc7']}
@@ -86,13 +88,20 @@ export default function Profile (props) {
           style={styles.container}
           onPress={() => setPartnerModalVisible(true)}
         >
-          <Image
-            source={partner.profileImageUrl ?
-              { uri: partner.profileImageUrl } :
-              require('../../../assets/profile.jpg')
-            }
-            style={styles.imageBox}
-          />
+          <>
+            {!!partner.personalMessage && (
+              <Text style={styles.personalMessage}>
+                {partner.personalMessage}
+              </Text>
+            )}
+            <Image
+              source={partner.profileImageUrl ?
+                { uri: partner.profileImageUrl } :
+                require('../../../assets/profile.jpg')
+              }
+              style={styles.imageBox}
+            />
+          </>
         </TouchableHighlight>
         <View style={styles.ddayBox}>
           <Text style={commonStyles.txtBlue}>
@@ -108,13 +117,20 @@ export default function Profile (props) {
           style={styles.container}
           onPress={() => setUserModalVisible(true)}
         >
-          <Image
-            source={user.profileImageUrl ?
-              { uri: user.profileImageUrl } :
-              require('../../../assets/profile.jpg')
-            }
-            style={styles.imageBox}
-          />
+          <>
+            {!!user.personalMessage && (
+              <Text style={styles.personalMessage}>
+                {user.personalMessage}
+              </Text>
+            )}
+            <Image
+              source={user.profileImageUrl ?
+                { uri: user.profileImageUrl } :
+                require('../../../assets/profile.jpg')
+              }
+              style={styles.imageBox}
+            />
+          </>
         </TouchableHighlight>
       </Container>
     </LinearGradient>
@@ -124,6 +140,7 @@ export default function Profile (props) {
 const styles = StyleSheet.create({
   container: {
     flex: 3,
+    position: 'relative',
     borderRadius: 10
   },
   imageBox: {
@@ -137,5 +154,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row'
+  },
+  personalMessage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    padding: 30,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 10,
+    zIndex: 5
   }
 });

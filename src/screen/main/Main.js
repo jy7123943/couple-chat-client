@@ -20,14 +20,16 @@ export default function Main (props) {
           birthday: userProfile.birthday,
           firstMeetDay: userProfile.first_meet_day,
           phoneNumber: userProfile.phone_number,
-          profileImageUrl: userProfile.profile_image_url
+          profileImageUrl: userProfile.profile_image_url,
+          personalMessage: userProfile.personal_message
         },
         partner: {
           id: partner.id,
           birthday: partner.birthday,
           name: partner.name,
           phoneNumber: partner.phone_number,
-          profileImageUrl: partner.profile_image_url
+          profileImageUrl: partner.profile_image_url,
+          personalMessage: partner.personal_message
         }
       });
     } catch (err) {

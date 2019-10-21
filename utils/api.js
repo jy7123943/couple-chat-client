@@ -5,11 +5,11 @@ import { Alert } from 'react-native';
 import getEnvVars from '../environment';
 const { apiUrl } = getEnvVars();
 
-export const signUpApi = (user) => {
+export const signUpApi = (userForm) => {
   return axios({
     method: 'post',
     url: `${apiUrl}/signUp`,
-    data: { ...user }
+    data: userForm
   })
     .then(res => res.data)
     .catch(err => err.response.data);
@@ -136,6 +136,19 @@ export const getChatAnalysisApi = (token) => {
   return axios({
     method: 'post',
     url: `${apiUrl}/chats/analysis`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.data)
+    .catch(err => err.response.data);
+};
+
+export const modifyProfileApi = (token, profileForm) => {
+  return axios({
+    method: 'put',
+    url: `${apiUrl}/profile`,
+    data: profileForm,
     headers: {
       'Authorization': `Bearer ${token}`
     }

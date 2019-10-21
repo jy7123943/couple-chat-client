@@ -12,7 +12,7 @@ export default function SignUp (props) {
   const [ isLoading, setLoading ] = useState(false);
   const Form = t.form.Form;
 
-  const LoginType = t.struct({
+  const LOGIN_TYPE = t.struct({
     id: t.String,
     password: t.String
   });
@@ -116,7 +116,7 @@ export default function SignUp (props) {
       </Header>
       <View style={styles.container}>
         <Form
-          type={LoginType}
+          type={LOGIN_TYPE}
           options={options}
           ref={formRef}
         />

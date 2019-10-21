@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, Alert } from 'react-native';
+import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
@@ -62,7 +62,7 @@ export default function ChatAnalysis (props) {
             style={styles.mainImage}
           />
         </View>
-        <View style={{flex: 1}}>
+        <ScrollView style={{flex: 1}}>
           <Text
             style={styles.title}
           >
@@ -76,7 +76,7 @@ export default function ChatAnalysis (props) {
           {isLoading && (
             <Spinner color="#5f7daf" />
           )}
-        </View>
+        </ScrollView>
         <Button
           block
           rounded
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   mainImage: {
     width: '100%',
     height: 250,
-    marginTop: 50
+    marginTop: 30
   },
   title: {
     width: '100%',
