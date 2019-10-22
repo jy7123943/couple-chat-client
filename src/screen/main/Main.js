@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TabNavigator from './BtmTabNavigator';
 
 export default function Main (props) {
-  const { screenProps } = props;
+  const { screenProps, navigation } = props;
+
+  useEffect(() => {
+    if (navigation.state.params && navigation.state.params.login) {
+      navigation.navigate('Login');
+    }
+  }, [ navigation.state.params ])
+
   const [ userProfile, setUserProfile ] = useState(null);
   const [ analysisResult, setAnalysisResult ] = useState(null);
 
@@ -49,7 +56,8 @@ export default function Main (props) {
         analysisResult,
         onLoadUserProfile,
         onLoadAnalysisResult,
-        onUserProfileUpdate
+        onUserProfileUpdate,
+        homeNavigation: navigation
       }}
     />
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, TouchableHighlight } from 'react-native';
 import { Notifications } from 'expo';
-import { Container, Text } from 'native-base';
+import { Container, Text, Button } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons';
 import { commonStyles } from '../../styles/Styles';
@@ -9,6 +9,7 @@ import { getUserInfoApi } from '../../../utils/api';
 import { calculateDday } from '../../../utils/utils';
 import ProfileModal from '../../components/main/ProfileModal';
 import Loading from '../../components/main/Loading';
+import * as SecureStore from 'expo-secure-store';
 
 export default function Profile (props) {
   const {
@@ -84,6 +85,17 @@ export default function Profile (props) {
           marginTop: 20
         }}
       >
+        {/* <Button
+          onPress={async () => {
+            // console.log('내비게이션',props.screenProps.homeNavigation.navigate('Main'));
+            await SecureStore.deleteItemAsync('userInfo');
+            homeNavigation.navigate('Main', {
+              login: true
+            });
+          }}
+        >
+          <Text>버튼</Text>
+        </Button> */}
         <TouchableHighlight
           style={styles.container}
           onPress={() => setPartnerModalVisible(true)}

@@ -118,24 +118,24 @@ export default class SignUp extends Component {
       >
         <Container style={commonStyles.headerContainer}>
           <Header style={commonStyles.header}>
-            <Left>
-              <Button
-                transparent
-                onPress={() => navigation.navigate('Home')}
-              >
-                <AntDesign
-                  name="left"
-                  color="#5f7daf"
-                  size={15}
-                />
-              </Button>
-            </Left>
-            <Right
+            <Left
               style={commonStyles.rightTextBtn}
             >
               <Text style={commonStyles.txtBlue}>
                 Join
               </Text>
+            </Left>
+            <Right>
+              <Button
+                transparent
+                onPress={() => navigation.navigate('Login')}
+              >
+                <AntDesign
+                  name="login"
+                  color="#5f7daf"
+                  size={15}
+                />
+              </Button>
             </Right>
           </Header>
         </Container>

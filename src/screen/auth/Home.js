@@ -38,6 +38,7 @@ export default function Home (props) {
     if (screenProps.userInfo) {
       return navigation.navigate('CoupleConnect');
     }
+
     if (screenProps.roomInfo) {
       return navigation.navigate('Main');
     }

@@ -10,6 +10,7 @@ import { commonStyles, formStyles } from '../../styles/Styles';
 import { createImageForm } from '../../../utils/utils';
 import { profileImgModifyApi, modifyProfileApi } from '../../../utils/api';
 import { REGEX_NAME, REGEX_PHONE_NUM, REGEX_PERSONAL_MESSAGE, EDIT_FORM_CONFIG } from '../../../utils/validation';
+import * as SecureStore from 'expo-secure-store';
 
 export default function ProfileModal (props) {
   const {
@@ -18,7 +19,8 @@ export default function ProfileModal (props) {
     userProfile,
     isUser,
     userInfo,
-    onUserProfileUpdate
+    onUserProfileUpdate,
+    homeNavigation
   } = props;
 
   const Form = t.form.Form;
@@ -167,7 +169,7 @@ export default function ProfileModal (props) {
       </Button>
       <View style={styles.modalWrap}>
         <Text style={styles.personalMessage}>
-          {profile.personalMessage ? profile.personalMessage : '하단의 버튼을 눌러 상태메시지를 입력해보세요'}
+          {!!profile.personalMessage && profile.personalMessage}
         </Text>
         <Image
           source={profile.profileImageUrl ?
@@ -177,60 +179,77 @@ export default function ProfileModal (props) {
           style={styles.imageBox}
         />
         {isUser && (
-          <Fab
-            active={isFabActive}
-            direction="left"
-            position="bottomRight"
-            style={styles.fabBigBtn}
-            onPress={() => setFabActive(!isFabActive)}
-          >
-            <Feather name="more-vertical" />
+          <>
             <Button
-              style={styles.fabBtn}
-              onPress={onImageSearch}
+              style={styles.logoutBtn}
+              onPress={async () => {
+                await SecureStore.deleteItemAsync('userInfo');
+                homeNavigation.navigate('Main', {
+                  login: true
+                });
+              }}
             >
-              <Entypo
-                name="camera"
+              <AntDesign
+                name="logout"
                 color="#fff"
                 size={20}
               />
             </Button>
-            {!isEditMode ? (
+            <Fab
+              active={isFabActive}
+              direction="left"
+              position="bottomRight"
+              style={styles.fabBigBtn}
+              onPress={() => setFabActive(!isFabActive)}
+            >
+              <Feather name="more-vertical" />
               <Button
                 style={styles.fabBtn}
-                onPress={() => setEditMode(!isEditMode)}
+                onPress={onImageSearch}
               >
-                <AntDesign
-                  name="edit"
+                <Entypo
+                  name="camera"
                   color="#fff"
                   size={20}
                 />
               </Button>
-            ) : (
-              <Button
-                style={styles.fabBtn}
-                onPress={handleSubmit}
-              >
-                <AntDesign
-                  name="save"
-                  color="#fff"
-                  size={20}
-                />
-              </Button>
-            )}
-            {isEditMode && (
-              <Button
-                style={styles.fabBtn}
-                onPress={cancelSubmit}
-              >
-                <AntDesign
-                  name="close"
-                  color="#fff"
-                  size={20}
-                />
-              </Button>
-            )}
-          </Fab>
+              {!isEditMode ? (
+                <Button
+                  style={styles.fabBtn}
+                  onPress={() => setEditMode(!isEditMode)}
+                >
+                  <AntDesign
+                    name="edit"
+                    color="#fff"
+                    size={20}
+                  />
+                </Button>
+              ) : (
+                <Button
+                  style={styles.fabBtn}
+                  onPress={handleSubmit}
+                >
+                  <AntDesign
+                    name="save"
+                    color="#fff"
+                    size={20}
+                  />
+                </Button>
+              )}
+              {isEditMode && (
+                <Button
+                  style={styles.fabBtn}
+                  onPress={cancelSubmit}
+                >
+                  <AntDesign
+                    name="close"
+                    color="#fff"
+                    size={20}
+                  />
+                </Button>
+              )}
+            </Fab>
+          </>
         )}
       </View>
       {!isEditMode && (
@@ -346,5 +365,16 @@ const styles = StyleSheet.create({
     padding: 30,
     paddingTop: 20,
     paddingBottom: 20
+  },
+  logoutBtn: {
+    position: 'absolute',
+    bottom: 80,
+    right: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 30,
+    backgroundColor: '#afafc7',
+    justifyContent: 'center',
+    zIndex: 10
   }
 });
