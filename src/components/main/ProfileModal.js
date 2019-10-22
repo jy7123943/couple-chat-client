@@ -89,7 +89,6 @@ export default function ProfileModal (props) {
         return;
       }
 
-      console.log('이미지 업로드--------',imageFile.uri);
       onImageUpload(imageFile.uri);
     } catch (err) {
       if (err.message === 'permission not granted') {
@@ -101,6 +100,21 @@ export default function ProfileModal (props) {
       }
       console.log(err);
     }
+  };
+
+  const onLogout = async () => {
+    try {
+      await SecureStore.deleteItemAsync('userInfo');
+    } catch (err) {
+      return Alert.alert(
+        '실패',
+        '다시 시도해주세요.',
+        [{ text: '확인' }]
+      );
+    }
+    homeNavigation.navigate('Main', {
+      login: true
+    });
   };
 
   const formRef = useRef(null);
@@ -182,12 +196,7 @@ export default function ProfileModal (props) {
           <>
             <Button
               style={styles.logoutBtn}
-              onPress={async () => {
-                await SecureStore.deleteItemAsync('userInfo');
-                homeNavigation.navigate('Main', {
-                  login: true
-                });
-              }}
+              onPress={onLogout}
             >
               <AntDesign
                 name="logout"
@@ -368,7 +377,7 @@ const styles = StyleSheet.create({
   },
   logoutBtn: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 90,
     right: 25,
     width: 40,
     height: 40,

@@ -213,7 +213,7 @@ export default class ChatRoom extends Component {
                   );
 
                   return (
-                    <View key={chat.created_at}>
+                    <View key={i}>
                       {isDateChanged && (
                         <View
                           style={commonStyles.textCenter}

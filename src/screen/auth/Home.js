@@ -14,7 +14,6 @@ export default function Home (props) {
 
   useEffect(() => {
     const authenticateUser = async (navigation, setUserInfo, setRoomInfo) => {
-      // await SecureStore.deleteItemAsync('userInfo');
       const userInfoString = await SecureStore.getItemAsync('userInfo');
 
       if (userInfoString) {

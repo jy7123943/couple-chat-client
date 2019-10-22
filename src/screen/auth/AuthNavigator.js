@@ -12,7 +12,7 @@ const Auth = createSwitchNavigator({
   Login,
   ProfileUpload,
   CoupleConnect,
-  Main,
+  Main
 }, {
   initialRouteName: 'Home',
 });

@@ -7,6 +7,7 @@ export default function Main (props) {
   useEffect(() => {
     if (navigation.state.params && navigation.state.params.login) {
       navigation.navigate('Login');
+      navigation.setParams({ login: null });
     }
   }, [ navigation.state.params ])
 

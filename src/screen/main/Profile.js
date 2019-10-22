@@ -9,7 +9,6 @@ import { getUserInfoApi } from '../../../utils/api';
 import { calculateDday } from '../../../utils/utils';
 import ProfileModal from '../../components/main/ProfileModal';
 import Loading from '../../components/main/Loading';
-import * as SecureStore from 'expo-secure-store';
 
 export default function Profile (props) {
   const {
@@ -39,11 +38,13 @@ export default function Profile (props) {
 
     onLoad();
 
-    Notifications.addListener((notification) => {
+    const notificationSubscription = Notifications.addListener((notification) => {
       if (notification.origin === 'received') {
         navigation.navigate('ChatRoom');
       }
     });
+
+    return () => notificationSubscription.remove();
   }, []);
 
   if (isLoading) {
@@ -54,8 +55,6 @@ export default function Profile (props) {
     user,
     partner
   } = userProfile;
-
-  console.log(user, partner);
 
   return (
     <LinearGradient
@@ -85,17 +84,6 @@ export default function Profile (props) {
           marginTop: 20
         }}
       >
-        {/* <Button
-          onPress={async () => {
-            // console.log('내비게이션',props.screenProps.homeNavigation.navigate('Main'));
-            await SecureStore.deleteItemAsync('userInfo');
-            homeNavigation.navigate('Main', {
-              login: true
-            });
-          }}
-        >
-          <Text>버튼</Text>
-        </Button> */}
         <TouchableHighlight
           style={styles.container}
           onPress={() => setPartnerModalVisible(true)}
