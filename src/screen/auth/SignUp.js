@@ -78,7 +78,7 @@ export default class SignUp extends Component {
         const loginResponse = await loginApi(formValue.id, formValue.password);
         this.clearForm();
 
-        if (loginResponse.loginError || loginResponse.result !== 'ok') {
+        if (loginResponse.result !== 'ok') {
           Alert.alert(
             '로그인 실패',
             '다시 시도해주세요',

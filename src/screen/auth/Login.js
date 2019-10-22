@@ -50,7 +50,7 @@ export default function SignUp (props) {
       setLoading(true);
       const loginResponse = await loginApi(id, password);
 
-      if (loginResponse.Error || loginResponse === 'Unauthorized') {
+      if (loginResponse === 'Unauthorized') {
         Alert.alert(
           '로그인 실패',
           '아이디나 비밀번호가 잘못되었습니다',

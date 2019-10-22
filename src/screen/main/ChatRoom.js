@@ -4,7 +4,7 @@ import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native
 import { Header, Left, Right, Text, Button, Input, Item, Thumbnail, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
-import { Feather } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import io from 'socket.io-client';
 import moment from 'moment';
@@ -265,9 +265,10 @@ export default class ChatRoom extends Component {
             </>
           </ScrollView>
           <View style={{
-            height: 60
+            height: 50,
+            marginTop: 10
           }}>
-            <Item>
+            <Item style={{ borderColor: 'transparent' }}>
               <Input
                 onChangeText={(text) => {
                   this.setState({
@@ -276,15 +277,17 @@ export default class ChatRoom extends Component {
                   });
                 }}
                 value={this.state.text}
+                style={styles.inputText}
               />
               <Button
                 transparent
                 onPress={this.sendTextMessage}
+                style={styles.chatBtn}
               >
-                <Feather
-                  name="send"
-                  size={30}
-                  color="#5f7daf"
+                <FontAwesome
+                  name="heart-o"
+                  size={25}
+                  color="#eee"
                 />
               </Button>
             </Item>
@@ -355,5 +358,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     borderRadius: 15,
     backgroundColor: 'rgba(152, 164, 158, 0.6)'
+  },
+  inputText: {
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)'
+  },
+  chatBtn: {
+    width: 50,
+    height: 50,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(95, 125, 175, 0.68)'
   }
 });
