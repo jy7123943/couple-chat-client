@@ -9,8 +9,6 @@ import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 
 export default function CoupleConnect (props) {
-  const socket = io(apiUrl);
-
   const {
     navigation
   } = props;
@@ -18,6 +16,7 @@ export default function CoupleConnect (props) {
   const [ isLoading, setLoading ] = useState(false);
 
   useEffect(() => {
+    const socket = io(apiUrl);
     socket.connect();
     socket.on('waitingPartner', () => {
       setLoading(true);

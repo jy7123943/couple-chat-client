@@ -198,11 +198,7 @@ export default function ProfileModal (props) {
               style={styles.logoutBtn}
               onPress={onLogout}
             >
-              <AntDesign
-                name="logout"
-                color="#fff"
-                size={20}
-              />
+              <Text style={styles.logoutText}>Logout</Text>
             </Button>
             <Fab
               active={isFabActive}
@@ -212,16 +208,18 @@ export default function ProfileModal (props) {
               onPress={() => setFabActive(!isFabActive)}
             >
               <Feather name="more-vertical" />
-              <Button
-                style={styles.fabBtn}
-                onPress={onImageSearch}
-              >
-                <Entypo
-                  name="camera"
-                  color="#fff"
-                  size={20}
-                />
-              </Button>
+              {!isEditMode && (
+                <Button
+                  style={styles.fabBtn}
+                  onPress={onImageSearch}
+                >
+                  <Entypo
+                    name="camera"
+                    color="#fff"
+                    size={20}
+                  />
+                </Button>
+              )}
               {!isEditMode ? (
                 <Button
                   style={styles.fabBtn}
@@ -235,11 +233,14 @@ export default function ProfileModal (props) {
                 </Button>
               ) : (
                 <Button
-                  style={styles.fabBtn}
+                  style={{
+                    ...styles.fabBtn,
+                    backgroundColor: '#ffc31a'
+                  }}
                   onPress={handleSubmit}
                 >
                   <AntDesign
-                    name="save"
+                    name="check"
                     color="#fff"
                     size={20}
                   />
@@ -378,12 +379,15 @@ const styles = StyleSheet.create({
   logoutBtn: {
     position: 'absolute',
     bottom: 90,
-    right: 25,
-    width: 40,
+    right: 5,
     height: 40,
     borderRadius: 30,
-    backgroundColor: '#afafc7',
+    backgroundColor: '#f7eed3',
     justifyContent: 'center',
     zIndex: 10
+  },
+  logoutText: {
+    fontSize: 14,
+    color: '#afafc7'
   }
 });

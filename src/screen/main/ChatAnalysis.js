@@ -33,15 +33,23 @@ export default function ChatAnalysis (props) {
         return setLoading(false);
       }
 
-      if (response.result === 'ok') {
-        await SecureStore.setItemAsync('analysisResult', JSON.stringify(response.analysis_report));
-        onLoadAnalysisResult(response.analysis_report);
-        setLoading(false);
+      if (response.result !== 'ok') {
+        throw new Error('chat analysis failed');
       }
+
+      await SecureStore.setItemAsync('analysisResult', JSON.stringify(response.analysis_report));
+      onLoadAnalysisResult(response.analysis_report);
+      setLoading(false);
 
       navigation.navigate('ChatAnalysisResult');
     } catch (err) {
       console.log(err);
+      setLoading(false);
+      Alert.alert(
+        '실패',
+        '대화 분석에 실패했습니다. 나중에 시도해주세요.',
+        [{ text: '확인' }]
+      );
     }
   };
 

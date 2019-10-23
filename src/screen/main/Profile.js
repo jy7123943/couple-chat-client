@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Image, TouchableHighlight, Alert } from 'react-native';
 import { Notifications } from 'expo';
 import { Container, Text, Button } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,6 +33,12 @@ export default function Profile (props) {
         setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
+        Alert.alert(
+          '실패',
+          '프로필 내용을 불러오는데 실패했습니다.',
+          [{ text: '확인' }]
+        );
       }
     };
 

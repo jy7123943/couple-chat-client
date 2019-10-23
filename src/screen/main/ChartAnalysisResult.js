@@ -40,6 +40,7 @@ export default function ChatAnalysisResult (props) {
       getStoredAnalysisResult();
     } catch (err) {
       console.log(err);
+      onLoadAnalysisResult(null);
     }
   }, []);
 

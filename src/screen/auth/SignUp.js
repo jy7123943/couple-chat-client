@@ -39,13 +39,8 @@ export default class SignUp extends Component {
     first_meet_day: t.Date
   });
 
-  onChange = (value) => {
-    this.setState({ value });
-  };
-
-  clearForm = () => {
-    this.setState({ value: null });
-  };
+  onChange = (value) => this.setState({ value });
+  clearForm = () => this.setState({ value: null });
 
   handleSubmit = async () => {
     const { navigation, screenProps } = this.props;
@@ -75,36 +70,44 @@ export default class SignUp extends Component {
           [{ text: '확인' }]
         );
 
-        const loginResponse = await loginApi(formValue.id, formValue.password);
         this.clearForm();
 
-        if (loginResponse.result !== 'ok') {
-          Alert.alert(
-            '로그인 실패',
-            '다시 시도해주세요',
-            [{ text: '확인' }]
-          );
-          return navigation.navigate('Login');
+        try {
+          const loginResponse = await loginApi(formValue.id, formValue.password);
+
+          if (loginResponse.result !== 'ok') {
+            throw new Error('login failed');
+          }
+
+          const { token, userId } = loginResponse;
+          await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
+          screenProps.setUserInfo({ token, userId });
+
+          const tokenSaveResult = await sendUserPushToken(token);
+          if (tokenSaveResult.result !== 'ok') {
+            throw new Error('login failed');
+          }
+
+          return navigation.navigate('ProfileUpload');
+        } catch (err) {
+          if (err.message === 'login failed') {
+            Alert.alert(
+              '로그인 실패',
+              '다시 시도해주세요',
+              [{ text: '확인' }]
+            );
+            return navigation.navigate('Login');
+          }
         }
-
-        const { token, userId } = loginResponse;
-        await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
-        screenProps.setUserInfo({ token, userId });
-
-        const tokenSaveResult = await sendUserPushToken(token);
-        if (tokenSaveResult.result !== 'ok') {
-          Alert.alert(
-            '로그인 실패',
-            '다시 시도해주세요',
-            [{ text: '확인' }]
-          );
-          return navigation.navigate('Login');
-        }
-
-        return navigation.navigate('ProfileUpload');
       }
     } catch(err) {
       console.log(err);
+      Alert.alert(
+        '회원가입 실패',
+        '다시 시도해주세요',
+        [{ text: '확인' }]
+      );
+      return navigation.navigate('SignUp');
     }
   };
 

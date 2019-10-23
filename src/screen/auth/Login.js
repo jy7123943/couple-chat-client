@@ -61,13 +61,7 @@ export default function SignUp (props) {
       }
 
       if (loginResponse.result !== 'ok') {
-        Alert.alert(
-          '로그인 실패',
-          '다시 시도해주세요',
-          [{ text: '확인' }]
-        );
-        setLoading(false);
-        return navigation.navigate('Login');
+        throw new Error('login failed');
       }
 
       const { token, userId } = loginResponse;
@@ -77,12 +71,7 @@ export default function SignUp (props) {
       const tokenSaveResult = await sendUserPushToken(token);
 
       if (tokenSaveResult.result !== 'ok') {
-        Alert.alert(
-          '로그인 실패',
-          '다시 시도해주세요',
-          [{ text: '확인' }]
-        );
-        return navigation.navigate('Login');
+        throw new Error('pushtoken failed');
       }
 
       if (loginResponse.roomInfo) {

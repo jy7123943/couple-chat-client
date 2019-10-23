@@ -85,6 +85,7 @@ export const sendUserPushToken = async (token) => {
       .then(res => res.data)
       .catch(err => err.response.data);
   } catch (err) {
+    console.log(err);
     if (err.message === 'permission not granted') {
       return Alert.alert(
         '알림',
@@ -92,7 +93,11 @@ export const sendUserPushToken = async (token) => {
         [{ text: '확인' }]
       );
     }
-    console.log(err);
+    return Alert.alert(
+      '실패',
+      '다시 시도해주세요.',
+      [{ text: '확인' }]
+    );
   }
 };
 

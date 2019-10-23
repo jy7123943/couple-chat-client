@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import { Header, Left, Right, Text, Button, Input, Item, Thumbnail, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
@@ -40,7 +40,6 @@ export default class ChatRoom extends Component {
     this.socket.connect();
 
     this.focusListener = navigation.addListener('didFocus', async () => {
-      console.log('screen did focus');
       try {
         this.setState({
           ...this.state,
@@ -51,6 +50,11 @@ export default class ChatRoom extends Component {
         this.onLoadChatTextList(chats);
       } catch (err) {
         console.log(err);
+        Alert.alert(
+          '실패',
+          '지난 대화 내용을 불러오는데 실패했습니다.',
+          [{ text: '확인' }]
+        );
       }
 
       this.socket.emit('joinRoom', roomInfo.roomKey);
@@ -62,6 +66,10 @@ export default class ChatRoom extends Component {
     });
 
     this.socket.on('connect', () => {
+      this.setState({
+        ...this.state,
+        isError: false
+      });
       console.log('chatroom socket connected');
     });
 

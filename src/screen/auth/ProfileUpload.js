@@ -36,14 +36,19 @@ export default function ProfileUpload (props) {
 
       setProfileImageUri(imageFile.uri);
     } catch (err) {
+      console.log(err);
       if (err.message === 'permission not granted') {
         return Alert.alert(
-          '실패',
+          '안내',
           '카메라 앨범 접근 권한이 필요합니다.',
           [{ text: '확인' }]
         );
       }
-      console.log(err);
+      return Alert.alert(
+        '실패',
+        '다시 시도해주세요.',
+        [{ text: '확인' }]
+      );
     }
   };
 
@@ -53,11 +58,11 @@ export default function ProfileUpload (props) {
 
       const response = await profileImgUploadApi(imgFormData, screenProps.userInfo.token);
 
-      if (response.result === 'ok') {
-        navigation.navigate('CoupleConnect');
-      } else {
+      if (response.result !== 'ok') {
         throw new Error('image upload failed');
       }
+
+      navigation.navigate('CoupleConnect');
     } catch (err) {
       console.log(err);
       return Alert.alert(

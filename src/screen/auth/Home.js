@@ -7,42 +7,44 @@ import * as SecureStore from 'expo-secure-store';
 import { getUserRoomInfoApi } from '../../../utils/api';
 
 export default function Home (props) {
-  const {
-    navigation,
-    screenProps
-  } = props;
+  const { navigation, screenProps } = props;
+  let isMounted = false;
 
   useEffect(() => {
+    isMounted = true;
+
     const authenticateUser = async (navigation, setUserInfo, setRoomInfo) => {
-      const userInfoString = await SecureStore.getItemAsync('userInfo');
+      try {
+        const userInfoString = await SecureStore.getItemAsync('userInfo');
 
-      if (userInfoString) {
-        const userInfo = JSON.parse(userInfoString);
-        setUserInfo(userInfo);
+        if (userInfoString) {
+          const userInfo = JSON.parse(userInfoString);
+          isMounted && setUserInfo(userInfo);
 
-        const response = await getUserRoomInfoApi(userInfo.token);
+          const response = await getUserRoomInfoApi(userInfo.token);
 
-        if (response.result === 'ok') {
-          setRoomInfo(response.roomInfo);
-          return navigation.navigate('Main');
+          if (response.result === 'ok') {
+            isMounted && setRoomInfo(response.roomInfo);
+            return navigation.navigate('Main');
+          }
+
+          if (response.result === 'not found') {
+            return navigation.navigate('CoupleConnect');
+          }
         }
-
-        if (response.result === 'not found') {
-          return navigation.navigate('CoupleConnect');
-        }
+        return navigation.navigate('Home');
+      } catch (err) {
+        console.log(err);
       }
-      return navigation.navigate('Home');
     };
 
-    if (screenProps.userInfo) {
-      return navigation.navigate('CoupleConnect');
+    if (isMounted) {
+      authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
     }
 
-    if (screenProps.roomInfo) {
-      return navigation.navigate('Main');
+    return () => {
+      isMounted = false;
     }
-
-    authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
   }, []);
 
   return (
