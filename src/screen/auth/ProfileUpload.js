@@ -3,13 +3,18 @@ import { StyleSheet, View, Image, Alert } from 'react-native';
 import { Header, Text, Button } from 'native-base';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { profileImgUploadApi } from '../../../utils/api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createImageForm } from '../../../utils/utils';
 import { commonStyles } from '../../styles/Styles';
 
 export default function ProfileUpload (props) {
-  const { navigation, screenProps } = props;
+  const {
+    navigation,
+    screenProps: {
+      userInfo,
+      api
+    }
+  } = props;
   const [ profileImageUri, setProfileImageUri ] = useState(null);
 
   const onImageSearch = async () => {
@@ -56,7 +61,7 @@ export default function ProfileUpload (props) {
     try {
       const imgFormData = createImageForm(profileImageUri);
 
-      const response = await profileImgUploadApi(imgFormData, screenProps.userInfo.token);
+      const response = await api.profileImgUploadApi(imgFormData, userInfo.token);
 
       if (response.result !== 'ok') {
         throw new Error('image upload failed');

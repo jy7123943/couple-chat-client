@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, TouchableHighlight, Alert } from 'react-native';
 import { Notifications } from 'expo';
-import { Container, Text, Button } from 'native-base';
+import { Container, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons';
 import { commonStyles } from '../../styles/Styles';
-import { getUserInfoApi } from '../../../utils/api';
 import { calculateDday } from '../../../utils/utils';
 import ProfileModal from '../../components/main/ProfileModal';
 import Loading from '../../components/main/Loading';
@@ -16,7 +15,8 @@ export default function Profile (props) {
     screenProps: {
       onLoadUserProfile,
       userProfile,
-      userInfo
+      userInfo,
+      api
     }
   } = props;
 
@@ -27,7 +27,7 @@ export default function Profile (props) {
   useEffect(() => {
     const onLoad = async () => {
       try {
-        const user = await getUserInfoApi(userInfo.token);
+        const user = await api.getUserInfoApi(userInfo.token);
 
         onLoadUserProfile(user);
         setLoading(false);

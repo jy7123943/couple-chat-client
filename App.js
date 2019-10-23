@@ -4,6 +4,7 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import AuthNavigator from './src/navigation/AuthNavigator';
+import * as api from './utils/api';
 
 YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([
@@ -53,7 +54,19 @@ export default class Root extends Component {
         screenProps={{
           ...this.state,
           setRoomInfo: this.setRoomInfo,
-          setUserInfo: this.setUserInfo
+          setUserInfo: this.setUserInfo,
+          api: {
+            signUpApi: api.signUpApi,
+            loginApi: api.loginApi,
+            profileImgUploadApi: api.profileImgUploadApi,
+            profileImgModifyApi: api.profileImgModifyApi,
+            sendUserPushToken: api.sendUserPushToken,
+            getUserInfoApi: api.getUserInfoApi,
+            getUserRoomInfoApi: api.getUserRoomInfoApi,
+            getChatTextsApi: api.getChatTextsApi,
+            getChatAnalysisApi: api.getChatAnalysisApi,
+            modifyProfileApi: api.modifyProfileApi
+          }
         }}
       />
     );

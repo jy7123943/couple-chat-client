@@ -4,11 +4,17 @@ import { Header, Text, Button, Spinner } from 'native-base';
 import * as SecureStore from 'expo-secure-store';
 import t from 'tcomb-form-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { loginApi, sendUserPushToken } from '../../../utils/api';
 import { commonStyles, formStyles } from '../../styles/Styles';
 
 export default function SignUp (props) {
-  const { navigation, screenProps } = props;
+  const {
+    navigation,
+    screenProps: {
+      setUserInfo,
+      setRoomInfo,
+      api
+    }
+  } = props;
   const [ isLoading, setLoading ] = useState(false);
   const Form = t.form.Form;
 
@@ -48,7 +54,7 @@ export default function SignUp (props) {
 
     try {
       setLoading(true);
-      const loginResponse = await loginApi(id, password);
+      const loginResponse = await api.loginApi(id, password);
 
       if (loginResponse === 'Unauthorized') {
         Alert.alert(
@@ -66,16 +72,16 @@ export default function SignUp (props) {
 
       const { token, userId } = loginResponse;
       await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
-      screenProps.setUserInfo({ token, userId });
+      setUserInfo({ token, userId });
 
-      const tokenSaveResult = await sendUserPushToken(token);
+      const tokenSaveResult = await api.sendUserPushToken(token);
 
       if (tokenSaveResult.result !== 'ok') {
         throw new Error('pushtoken failed');
       }
 
       if (loginResponse.roomInfo) {
-        screenProps.setRoomInfo(loginResponse.roomInfo);
+        setRoomInfo(loginResponse.roomInfo);
         return navigation.navigate('Main');
       }
 

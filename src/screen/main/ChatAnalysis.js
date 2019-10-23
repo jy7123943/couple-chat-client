@@ -4,7 +4,6 @@ import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
 import { Header, Text, Button, Spinner } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles } from '../../styles/Styles';
-import { getChatAnalysisApi } from '../../../utils/api';
 import * as SecureStore from 'expo-secure-store';
 
 export default function ChatAnalysis (props) {
@@ -13,7 +12,8 @@ export default function ChatAnalysis (props) {
     screenProps: {
       userInfo,
       userProfile: { user },
-      onLoadAnalysisResult
+      onLoadAnalysisResult,
+      api
     }
   } = props;
 
@@ -22,7 +22,7 @@ export default function ChatAnalysis (props) {
   const handleBtnPress = async () => {
     try {
       setLoading(true);
-      const response = await getChatAnalysisApi(userInfo.token);
+      const response = await api.getChatAnalysisApi(userInfo.token);
 
       if (response.error) {
         Alert.alert(

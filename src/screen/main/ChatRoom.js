@@ -9,7 +9,6 @@ import { AntDesign } from '@expo/vector-icons';
 import io from 'socket.io-client';
 import moment from 'moment';
 import 'moment/min/locales';
-import { getChatTextsApi } from '../../../utils/api';
 import { verifyDateChange } from '../../../utils/utils';
 import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
@@ -33,7 +32,8 @@ export default class ChatRoom extends Component {
       navigation,
       screenProps: {
         userInfo,
-        roomInfo
+        roomInfo,
+        api
       }
     } = this.props;
 
@@ -46,7 +46,7 @@ export default class ChatRoom extends Component {
           isLoading: true
         });
 
-        const { chats } = await getChatTextsApi(userInfo.token);
+        const { chats } = await api.getChatTextsApi(userInfo.token);
         this.onLoadChatTextList(chats);
       } catch (err) {
         console.log(err);

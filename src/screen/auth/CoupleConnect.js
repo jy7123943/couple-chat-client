@@ -9,9 +9,7 @@ import getEnvVars from '../../../environment';
 const { apiUrl } = getEnvVars();
 
 export default function CoupleConnect (props) {
-  const {
-    navigation
-  } = props;
+  const { navigation } = props;
 
   const [ isLoading, setLoading ] = useState(false);
 

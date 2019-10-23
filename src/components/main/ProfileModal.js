@@ -8,7 +8,6 @@ import { Text, Button, List, ListItem, Fab } from 'native-base';
 import { AntDesign, Entypo, Feather } from '@expo/vector-icons';
 import { commonStyles, formStyles } from '../../styles/Styles';
 import { createImageForm } from '../../../utils/utils';
-import { profileImgModifyApi, modifyProfileApi } from '../../../utils/api';
 import { REGEX_NAME, REGEX_PHONE_NUM, REGEX_PERSONAL_MESSAGE, EDIT_FORM_CONFIG } from '../../../utils/validation';
 import * as SecureStore from 'expo-secure-store';
 
@@ -20,7 +19,8 @@ export default function ProfileModal (props) {
     isUser,
     userInfo,
     onUserProfileUpdate,
-    homeNavigation
+    homeNavigation,
+    api
   } = props;
 
   const Form = t.form.Form;
@@ -44,7 +44,7 @@ export default function ProfileModal (props) {
   const onImageUpload = async (profileImageUri) => {
     try {
       const imgFormData = createImageForm(profileImageUri);
-      const response = await profileImgModifyApi(imgFormData, userInfo.token);
+      const response = await api.profileImgModifyApi(imgFormData, userInfo.token);
 
       if (response.result === 'ok') {
         const newUser = {
@@ -125,7 +125,7 @@ export default function ProfileModal (props) {
       return;
     }
 
-    const response = await modifyProfileApi(userInfo.token, formValue);
+    const response = await api.modifyProfileApi(userInfo.token, formValue);
 
     setEditMode(false);
     if (response.validationError) {

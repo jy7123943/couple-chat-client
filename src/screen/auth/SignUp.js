@@ -8,7 +8,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
 import { commonStyles, formStyles } from '../../styles/Styles';
 import { REGEX_ID, REGEX_PASSWORD, REGEX_NAME, REGEX_PHONE_NUM, FORM_CONFIG } from '../../../utils/validation';
-import { signUpApi, loginApi, sendUserPushToken } from '../../../utils/api';
 
 const Form = t.form.Form;
 
@@ -43,7 +42,13 @@ export default class SignUp extends Component {
   clearForm = () => this.setState({ value: null });
 
   handleSubmit = async () => {
-    const { navigation, screenProps } = this.props;
+    const {
+      navigation,
+      screenProps: {
+        setUserInfo,
+        api
+      }
+    } = this.props;
 
     var formValue = this.refs.form.getValue();
 
@@ -52,7 +57,7 @@ export default class SignUp extends Component {
     }
 
     try {
-      const joinResponse = await signUpApi(formValue);
+      const joinResponse = await api.signUpApi(formValue);
 
       if (joinResponse.validationError) {
         Alert.alert(
@@ -73,7 +78,7 @@ export default class SignUp extends Component {
         this.clearForm();
 
         try {
-          const loginResponse = await loginApi(formValue.id, formValue.password);
+          const loginResponse = await api.loginApi(formValue.id, formValue.password);
 
           if (loginResponse.result !== 'ok') {
             throw new Error('login failed');
@@ -81,9 +86,9 @@ export default class SignUp extends Component {
 
           const { token, userId } = loginResponse;
           await SecureStore.setItemAsync('userInfo', JSON.stringify({ token, userId }));
-          screenProps.setUserInfo({ token, userId });
+          setUserInfo({ token, userId });
 
-          const tokenSaveResult = await sendUserPushToken(token);
+          const tokenSaveResult = await api.sendUserPushToken(token);
           if (tokenSaveResult.result !== 'ok') {
             throw new Error('login failed');
           }

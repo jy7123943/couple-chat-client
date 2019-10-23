@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, Alert } from 'react-native';
 import { commonStyles } from '../../styles/Styles';
 import { Button, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as SecureStore from 'expo-secure-store';
-import { getUserRoomInfoApi } from '../../../utils/api';
 
 export default function Home (props) {
-  const { navigation, screenProps } = props;
+  const {
+    navigation,
+    screenProps: {
+      setRoomInfo,
+      setUserInfo,
+      api
+    }
+  } = props;
   let isMounted = false;
 
   useEffect(() => {
@@ -21,7 +27,7 @@ export default function Home (props) {
           const userInfo = JSON.parse(userInfoString);
           isMounted && setUserInfo(userInfo);
 
-          const response = await getUserRoomInfoApi(userInfo.token);
+          const response = await api.getUserRoomInfoApi(userInfo.token);
 
           if (response.result === 'ok') {
             isMounted && setRoomInfo(response.roomInfo);
@@ -32,14 +38,19 @@ export default function Home (props) {
             return navigation.navigate('CoupleConnect');
           }
         }
-        return navigation.navigate('Home');
       } catch (err) {
         console.log(err);
+        Alert.alert(
+          '실패',
+          '다시 로그인해주세요',
+          [{ text: '확인' }]
+        );
+        return navigation.navigate('Login');
       }
     };
 
     if (isMounted) {
-      authenticateUser(navigation, screenProps.setUserInfo, screenProps.setRoomInfo);
+      authenticateUser(navigation, setUserInfo, setRoomInfo);
     }
 
     return () => {
