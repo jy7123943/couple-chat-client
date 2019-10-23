@@ -6,7 +6,7 @@ import t from 'tcomb-form-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { commonStyles, formStyles } from '../../styles/Styles';
 
-export default function SignUp (props) {
+export default function Login (props) {
   const {
     navigation,
     screenProps: {

@@ -38,8 +38,14 @@ export default class SignUp extends Component {
     first_meet_day: t.Date
   });
 
-  onChange = (value) => this.setState({ value });
-  clearForm = () => this.setState({ value: null });
+  onChange = (value) => this.setState({
+    ...this.state,
+    value
+  });
+  clearForm = () => this.setState({
+    ...this.state,
+    value: null
+  });
 
   handleSubmit = async () => {
     const {
