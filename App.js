@@ -3,7 +3,7 @@ import { YellowBox } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import AuthNavigator from './src/screen/auth/AuthNavigator';
+import AuthNavigator from './src/navigation/AuthNavigator';
 
 YellowBox.ignoreWarnings(['Remote debugger']);
 YellowBox.ignoreWarnings([

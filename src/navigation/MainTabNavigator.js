@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
-import Profile from './Profile';
-import ChatRoom from './ChatRoom';
-import ChatAnalysis from './ChatAnalysis';
-import ChatAnalysisResult from './ChartAnalysisResult';
+import Profile from '../screen/main/Profile';
+import ChatRoom from '../screen/main/ChatRoom';
+import ChatAnalysis from '../screen/main/ChatAnalysis';
+import ChatAnalysisResult from '../screen/main/ChartAnalysisResult';
 
 const TabBarComponent = props => <BottomTabBar {...props} />;
 
@@ -16,8 +16,8 @@ const Tab = createBottomTabNavigator({
       tabBarIcon: ({ focused }) => (
         <Image
           source={!focused ?
-            require('../../../assets/love_icon04.png') :
-            require('../../../assets/love_icon04_on.png')
+            require('../../assets/love_icon04.png') :
+            require('../../assets/love_icon04_on.png')
           }
           style={styles.tabIcon}
         />
@@ -30,7 +30,7 @@ const Tab = createBottomTabNavigator({
       tabBarVisible: false,
       tabBarIcon: () => (
         <Image
-          source={require('../../../assets/love_icon01.png')}
+          source={require('../../assets/love_icon01.png')}
           style={styles.tabIcon}
         />
       )
@@ -42,8 +42,8 @@ const Tab = createBottomTabNavigator({
       tabBarIcon: ({ focused }) => (
         <Image
           source={!focused ?
-            require('../../../assets/love_icon03.png') :
-            require('../../../assets/love_icon03_on.png')
+            require('../../assets/love_icon03.png') :
+            require('../../assets/love_icon03_on.png')
           }
           style={styles.tabIcon}
         />
@@ -56,8 +56,8 @@ const Tab = createBottomTabNavigator({
       tabBarIcon: ({ focused }) => (
         <Image
           source={!focused ?
-            require('../../../assets/love_icon02.png') :
-            require('../../../assets/love_icon02_on.png')
+            require('../../assets/love_icon02.png') :
+            require('../../assets/love_icon02_on.png')
           }
           style={styles.tabIcon}
         />

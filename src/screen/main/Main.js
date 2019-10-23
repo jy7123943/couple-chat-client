@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TabNavigator from './BtmTabNavigator';
+import MainTabNavigator from '../../navigation/MainTabNavigator';
 
 export default function Main (props) {
   const { screenProps, navigation } = props;
@@ -50,7 +50,7 @@ export default function Main (props) {
   };
 
   return (
-    <TabNavigator
+    <MainTabNavigator
       screenProps={{
         ...screenProps,
         userProfile,
