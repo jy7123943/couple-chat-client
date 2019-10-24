@@ -337,7 +337,7 @@ export default function ChatAnalysisResult (props) {
                   }}
                 />
                 <Text style={commonStyles.txtBlue}>
-                  우리 커플이 말한 긍정적인 대화 TOP 5
+                  우리 커플이 말한 긍정적인 대화 TOP 10
                 </Text>
               </View>
               <ListItem
@@ -366,7 +366,7 @@ export default function ChatAnalysisResult (props) {
                   }}
                 />
                 <Text style={commonStyles.txtBlue}>
-                  우리 커플이 말한 부정적인 대화 TOP 5
+                  우리 커플이 말한 부정적인 대화 TOP 10
                 </Text>
               </View>
               <ListItem
