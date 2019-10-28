@@ -66,6 +66,7 @@ export const sendUserPushToken = async (token) => {
     }
 
     const pushToken = await Notifications.getExpoPushTokenAsync();
+    console.log(pushToken);
     await Notifications.createChannelAndroidAsync('chat-messages', {
       name: 'Chat messages',
       sound: true,
